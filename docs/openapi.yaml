@@ -1,0 +1,404 @@
+openapi: 3.0.3
+info:
+  title: LedgerCore internal ledger
+  version: 1.0.0
+  description: |
+    Educational RUB ledger with test funds. A static bearer token defines one
+    trusted internal scope; it is not per-user authorization. Client accounts
+    start at zero; an administrative fixture command funds them separately.
+
+    Money is decimal string minor units (kopecks), never floating point. Requests
+    normalize UUID case/outer whitespace, leading zeroes in amount_minor and
+    currency case/outer whitespace before fingerprinting. Metadata is included
+    in fingerprints and remains case-sensitive. Empty metadata and omitted
+    metadata are equivalent. All JSON bodies reject unknown fields and trailing
+    values and are limited to 32768 UTF-8 bytes.
+
+    Transfers and reversals require one Idempotency-Key header, scoped by kind.
+    Identical normalized requests replay the original status and semantic body,
+    including terminal business refusals. X-Request-ID is fresh for each HTTP
+    request. Changed parameters return 409 idempotency_conflict. Concurrent uses
+    wait for the first short DB transaction within timeouts; 503 is temporary.
+    On a lost connection or 503 at commit the outcome may be unknown. Retry the
+    same key and parameters; do not switch keys to investigate the outcome.
+
+    Each account read is one committed statement snapshot. History orders by
+    descending account-local sequence, assigned while holding the account lock.
+    Its first page fixes an upper sequence bound. Later pages exclude newer
+    commits and never duplicate entries of that original set. Balance and history
+    fetched by separate requests need not represent the same instant.
+
+    The request deadline is 5 seconds; DB statement timeout 4 seconds, lock timeout
+    2 seconds. Public API port defaults to 8080. Prometheus GET /metrics is served
+    exclusively on a separate listener, default 127.0.0.1:9090; do not expose that
+    listener outside the trusted monitoring network.
+
+    An independent read-only snapshot reconciliation runs at startup and after
+    each configured RECONCILE_INTERVAL (default 60s, allowed 10s..24h), producing
+    ledger_reconciliations_total and duration metrics. The audit has a 30-second
+    overall context and the same per-statement DB timeout; a timeout counts as
+    failed. It does not repair data or block normal transfers.
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerAuth: []
+tags:
+  - name: Accounts
+  - name: Transfers
+  - name: Health
+paths:
+  /v1/accounts:
+    post:
+      tags: [Accounts]
+      summary: Create a zero-balance client wallet
+      operationId: createAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                  description: Nonblank UTF-8 name, at most 128 bytes, no NUL.
+      responses:
+        '201':
+          description: Wallet created with zero balance. Account creation is not idempotent.
+          headers:
+            Location:
+              schema: {type: string}
+            X-Request-ID:
+              $ref: '#/components/headers/RequestID'
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Account'}
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '413': {$ref: '#/components/responses/BodyTooLarge'}
+        '415': {$ref: '#/components/responses/UnsupportedMediaType'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/accounts/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/ID'}
+    get:
+      tags: [Accounts]
+      summary: Read wallet balance and metadata
+      operationId: getAccount
+      responses:
+        '200':
+          description: Committed balance snapshot.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Account'}
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/accounts/{id}/entries:
+    parameters:
+      - {$ref: '#/components/parameters/ID'}
+    get:
+      tags: [Accounts]
+      summary: Page immutable account entries
+      operationId: getEntries
+      parameters:
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 100, default: 50}
+        - name: cursor
+          in: query
+          description: Opaque account-bound continuation from next_cursor. Keep the same account; page size may change.
+          schema: {type: string, maxLength: 256}
+      responses:
+        '200':
+          description: Descending sequence order with an initial fixed upper bound.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [entries]
+                properties:
+                  entries:
+                    type: array
+                    maxItems: 100
+                    items: {$ref: '#/components/schemas/Posting'}
+                  next_cursor:
+                    type: string
+                    description: Omitted at the end.
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/transfers:
+    post:
+      tags: [Transfers]
+      summary: Transfer between distinct client wallets
+      operationId: createTransfer
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/TransferRequest'}
+      responses:
+        '201': {$ref: '#/components/responses/OperationCreated'}
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/ProtectedAccount'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/BusinessConflict'}
+        '413': {$ref: '#/components/responses/BodyTooLarge'}
+        '415': {$ref: '#/components/responses/UnsupportedMediaType'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/transfers/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/ID'}
+    get:
+      tags: [Transfers]
+      summary: Read a committed operation and its two postings
+      operationId: getTransfer
+      description: Administrative funding and reversal records are also readable by their operation ID.
+      responses:
+        '200':
+          description: Immutable committed operation.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Transaction'}
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/transfers/{id}/reversal:
+    parameters:
+      - {$ref: '#/components/parameters/ID'}
+    post:
+      tags: [Transfers]
+      summary: Append one full reversal of an ordinary transfer
+      operationId: reverseTransfer
+      description: |
+        Uses a new key in the reversal namespace. Empty body or {} is accepted.
+        Funding and reversals cannot be reversed. The original recipient must
+        still have enough balance. A refused reversal is saved for its key;
+        a later attempt after funds change needs an intentionally new key.
+      parameters:
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: {type: object, additionalProperties: false}
+      responses:
+        '201': {$ref: '#/components/responses/OperationCreated'}
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/ProtectedAccount'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/BusinessConflict'}
+        '413': {$ref: '#/components/responses/BodyTooLarge'}
+        '415': {$ref: '#/components/responses/UnsupportedMediaType'}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /livez:
+    get:
+      tags: [Health]
+      summary: Process liveness
+      operationId: livez
+      security: []
+      responses:
+        '200':
+          description: HTTP process is responding.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, enum: [ok]}
+  /readyz:
+    get:
+      tags: [Health]
+      summary: Database readiness
+      operationId: readyz
+      security: []
+      responses:
+        '200':
+          description: Application role can ping the database within one second.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, enum: [ready]}
+        '503': {$ref: '#/components/responses/Unavailable'}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Static API_TOKEN from environment, minimum 16 bytes.
+  headers:
+    RequestID:
+      description: Server-generated correlation UUID; supplied client values are ignored.
+      schema: {type: string, format: uuid}
+    Replayed:
+      description: True when this key returns its previously committed result. Present on completed operation responses, including refusals.
+      schema: {type: boolean}
+  parameters:
+    ID:
+      name: id
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: 1..128 visible ASCII characters, unique within operation kind and this trusted contour. Retained without automatic expiry.
+      schema: {type: string, minLength: 1, maxLength: 128, pattern: '^[!-~]+$'}
+  schemas:
+    Amount:
+      type: string
+      pattern: '^[0-9]+$'
+      minLength: 1
+      maxLength: 64
+      example: '10000'
+      description: Positive int64 kopecks, at most 9223372036854775807. Leading zeroes accepted and normalized.
+    SignedAmount:
+      type: string
+      pattern: '^-?[0-9]+$'
+      example: '-10000'
+      description: Signed int64 minor units, encoded as a JSON string.
+    Metadata:
+      type: object
+      maxProperties: 16
+      additionalProperties: {type: string, maxLength: 256}
+      description: Keys 1..64 UTF-8 bytes, values at most 256 bytes, no NUL, total encoded JSON at most 2048 bytes. Sensitive content is not logged.
+    TransferRequest:
+      type: object
+      additionalProperties: false
+      required: [from_account_id, to_account_id, amount_minor, currency]
+      properties:
+        from_account_id: {type: string, format: uuid}
+        to_account_id: {type: string, format: uuid}
+        amount_minor: {$ref: '#/components/schemas/Amount'}
+        currency: {type: string, example: RUB, description: Only RUB after normalization.}
+        metadata: {$ref: '#/components/schemas/Metadata'}
+    Account:
+      type: object
+      required: [id, name, kind, currency, balance_minor, created_at]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        kind: {type: string, enum: [client, system]}
+        currency: {type: string, enum: [RUB]}
+        balance_minor: {$ref: '#/components/schemas/SignedAmount'}
+        created_at: {type: string, format: date-time}
+    Posting:
+      type: object
+      required: [transaction_id, account_id, delta_minor, sequence, created_at]
+      properties:
+        transaction_id: {type: string, format: uuid}
+        account_id: {type: string, format: uuid}
+        delta_minor: {$ref: '#/components/schemas/SignedAmount'}
+        sequence: {type: string, pattern: '^[1-9][0-9]*$', description: Account-local committed sequence.}
+        created_at: {type: string, format: date-time}
+    Transaction:
+      type: object
+      required: [id, kind, from_account_id, to_account_id, amount_minor, currency, created_at, postings]
+      properties:
+        id: {type: string, format: uuid}
+        kind: {type: string, enum: [transfer, funding, reversal]}
+        from_account_id: {type: string, format: uuid}
+        to_account_id: {type: string, format: uuid}
+        amount_minor: {$ref: '#/components/schemas/Amount'}
+        currency: {type: string, enum: [RUB]}
+        metadata: {$ref: '#/components/schemas/Metadata'}
+        reversal_of: {type: string, format: uuid}
+        created_at: {type: string, format: date-time}
+        postings:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items: {$ref: '#/components/schemas/Posting'}
+    Error:
+      type: object
+      required: [error, request_id]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: {type: string}
+            message: {type: string}
+        request_id: {type: string, format: uuid}
+      example:
+        error: {code: insufficient_funds, message: insufficient funds}
+        request_id: 10000000-0000-4000-8000-000000000001
+  responses:
+    OperationCreated:
+      description: Committed operation or replay of that operation.
+      headers:
+        Location:
+          schema: {type: string}
+        X-Request-ID: {$ref: '#/components/headers/RequestID'}
+        Idempotency-Replayed: {$ref: '#/components/headers/Replayed'}
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [transaction]
+            properties:
+              transaction: {$ref: '#/components/schemas/Transaction'}
+    InvalidRequest:
+      description: invalid_request; parse or normalization failure is not cached.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    Unauthorized:
+      description: unauthorized; missing or invalid bearer token.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    ProtectedAccount:
+      description: protected_account; public operations require client accounts.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    NotFound:
+      description: not_found; account or operation does not exist.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    BusinessConflict:
+      description: |
+        insufficient_funds, balance_overflow, sequence_overflow, already_reversed,
+        not_reversible, or idempotency_conflict. Business refusals are stored;
+        a key conflict leaves the original record unchanged.
+      headers:
+        Idempotency-Replayed: {$ref: '#/components/headers/Replayed'}
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    BodyTooLarge:
+      description: body_too_large; body exceeds 32768 bytes.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    UnsupportedMediaType:
+      description: unsupported_media_type; supplied Content-Type must be application/json.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    Unavailable:
+      description: temporarily_unavailable or not_ready. Retry same operation key; result may be unknown after commit transport failure. Infrastructure failure is not cached as a business result.
+      headers:
+        Retry-After:
+          schema: {type: integer, example: 1}
+        X-Request-ID: {$ref: '#/components/headers/RequestID'}
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}

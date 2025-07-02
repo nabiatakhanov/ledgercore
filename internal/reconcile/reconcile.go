@@ -47,20 +47,27 @@ func Run(ctx context.Context, pool *pgxpool.Pool) (Report, error) {
 		defer cancel()
 		_ = tx.Rollback(cleanup)
 	}()
+	var systemPresent bool
 	if err = tx.QueryRow(ctx, `SELECT (SELECT count(*) FROM accounts),
-		(SELECT count(*) FROM journal_transactions)`).Scan(&report.Accounts, &report.Transactions); err != nil {
+		(SELECT count(*) FROM journal_transactions),
+		EXISTS(SELECT 1 FROM accounts WHERE id='00000000-0000-0000-0000-000000000001' AND kind='system')`).Scan(&report.Accounts, &report.Transactions, &systemPresent); err != nil {
 		return report, err
+	}
+	if !systemPresent {
+		report.add("missing_system_account", "00000000-0000-0000-0000-000000000001", "balancing system account is absent or has the wrong kind")
 	}
 	rows, err := tx.Query(ctx, `
 		WITH aggregate_postings AS (
 			SELECT account_id, sum(delta_minor::numeric) AS balance,
-			       count(*) AS n, max(account_sequence) AS last_sequence
+			       count(*) AS n, max(account_sequence) AS last_sequence,
+			       min(account_sequence) AS first_sequence
 			FROM postings GROUP BY account_id
 		)
 		SELECT a.id::text, a.balance_minor::text, COALESCE(p.balance,0)::text,
 		       a.balance_minor < 0 AND a.kind='client',
 		       a.entry_sequence <> COALESCE(p.n,0)
-		       OR a.entry_sequence <> COALESCE(p.last_sequence,0),
+		       OR a.entry_sequence <> COALESCE(p.last_sequence,0)
+		       OR COALESCE(p.first_sequence,1) < 1,
 		       a.currency <> 'RUB' OR a.kind NOT IN ('system','client')
 		       OR (a.kind='system' AND a.id<>'00000000-0000-0000-0000-000000000001')
 		FROM accounts a LEFT JOIN aggregate_postings p ON p.account_id=a.id

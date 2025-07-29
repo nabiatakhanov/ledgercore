@@ -29,7 +29,7 @@ func main() {
 	}
 }
 
-func run(log *slog.Logger) error {
+func run(log *slog.Logger) (result error) {
 	dsn, token := os.Getenv("DATABASE_URL"), os.Getenv("API_TOKEN")
 	if dsn == "" || len(token) < 16 {
 		return errors.New("DATABASE_URL and API_TOKEN (at least 16 bytes) are required")
@@ -63,7 +63,23 @@ func run(log *slog.Logger) error {
 	if err != nil {
 		return errors.New("could not create database pool")
 	}
-	defer pool.Close()
+	var cleanupDeadline time.Time
+	var shutdownStarted bool
+	defer func() {
+		// Startup failures also clean up within a finite budget. After serving,
+		// the pool shares the listeners' original absolute shutdown deadline.
+		if cleanupDeadline.IsZero() {
+			cleanupDeadline = time.Now().Add(5 * time.Second)
+		}
+		cleanup, cancelCleanup := context.WithDeadline(context.Background(), cleanupDeadline)
+		defer cancelCleanup()
+		if err := closeWithin(cleanup, pool.Close); err != nil {
+			result = errors.Join(result, fmt.Errorf("database pool shutdown: %w", err))
+		}
+		if shutdownStarted && result == nil {
+			log.Info("API stopped gracefully")
+		}
+	}()
 	startup, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	if err = pool.Ping(startup); err != nil {
@@ -97,8 +113,13 @@ func run(log *slog.Logger) error {
 	case <-ctx.Done():
 	case serveErr = <-results:
 	}
+	if errors.Is(serveErr, http.ErrServerClosed) {
+		serveErr = nil
+	}
 	cancelAudit()
-	shutdown, cancelShutdown := context.WithTimeout(context.Background(), 10*time.Second)
+	shutdownStarted = true
+	cleanupDeadline = time.Now().Add(10 * time.Second)
+	shutdown, cancelShutdown := context.WithDeadline(context.Background(), cleanupDeadline)
 	defer cancelShutdown()
 	// Both listeners drain concurrently under the same bounded shutdown budget.
 	shutdownResults := make(chan error, 2)
@@ -120,11 +141,27 @@ func run(log *slog.Logger) error {
 			serveErr = shutdown.Err()
 		}
 	}
-	if serveErr != nil && !errors.Is(serveErr, http.ErrServerClosed) {
+	if serveErr != nil {
 		return serveErr
 	}
-	log.Info("API stopped gracefully")
 	return nil
+}
+
+// pgxpool.Close has no context and waits for borrowed connections. A faulty or
+// leaked borrower must not keep the process alive beyond the shutdown budget.
+// Always initiate closing, but let main exit with an error if it cannot finish.
+func closeWithin(ctx context.Context, closeFn func()) error {
+	done := make(chan struct{})
+	go func() {
+		closeFn()
+		close(done)
+	}()
+	select {
+	case <-done:
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 }
 
 // startAudit produces reconciliation metrics in the long-running service, using

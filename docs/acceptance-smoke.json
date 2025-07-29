@@ -1,0 +1,34 @@
+{
+  "measured_at": "2026-10-29T20:13:07.2503875+03:00",
+  "database": "ledgercore_acceptance_demo",
+  "source": "normalized LF migration, newly built binaries",
+  "migration_apply_count": 2,
+  "demo_run_count": 2,
+  "readyz_http_status": 200,
+  "livez_http_status": 200,
+  "first_run": {
+    "funding": 2,
+    "accounts": 3,
+    "postings": 10,
+    "transactions": 5,
+    "migration_version": "001_ledger.sql",
+    "migration_checksum": "e96ffd53431bd54dc4f4ffd876400b30d2f01597792087e13e23a9ffd14899d1"
+  },
+  "second_run": {
+    "funding": 2,
+    "accounts": 3,
+    "postings": 10,
+    "transactions": 5,
+    "migration_version": "001_ledger.sql",
+    "migration_checksum": "e96ffd53431bd54dc4f4ffd876400b30d2f01597792087e13e23a9ffd14899d1"
+  },
+  "same_counts": true,
+  "source_migration_sha256": "e96ffd53431bd54dc4f4ffd876400b30d2f01597792087e13e23a9ffd14899d1",
+  "final_reconciliation": {
+    "ok": true,
+    "accounts": 3,
+    "transactions": 5,
+    "issue_count": 0,
+    "issues": []
+  }
+}

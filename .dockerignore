@@ -1,0 +1,9 @@
+.git
+.env
+bin
+.tools
+.runtime
+*.exe
+*.test
+coverage.out
+docs/bench-results*.json

@@ -1,0 +1,117 @@
+name: ledgercore
+
+x-runtime: &runtime
+  image: ledgercore:local
+  build:
+    context: .
+    target: runtime
+  init: true
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+
+services:
+  db:
+    image: postgres:17.9-bookworm@sha256:47f917f7409eacd22fc5dfb1dee634e1b55cf0c01d1a7eb701be2227a03e0641
+    environment:
+      POSTGRES_USER: ledger_bootstrap
+      POSTGRES_DB: ledgercore
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ledger-local-bootstrap-only}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+      LEDGER_MIGRATOR_PASSWORD: ${MIGRATOR_PASSWORD:-ledger-local-migrator-only}
+      LEDGER_APP_PASSWORD: ${APP_PASSWORD:-ledger-local-app-only}
+      LEDGER_FIXTURE_PASSWORD: ${FIXTURE_PASSWORD:-ledger-local-fixture-only}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/bootstrap-db.sh:/docker-entrypoint-initdb.d/10-ledger-roles.sh:ro
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, ledger_bootstrap, -d, ledgercore]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    stop_grace_period: 30s
+
+  migrate:
+    <<: *runtime
+    entrypoint: [/app/ledgerctl]
+    command: [migrate]
+    environment:
+      MIGRATION_DATABASE_URL: postgres://ledger_migrator:${MIGRATOR_PASSWORD:-ledger-local-migrator-only}@db:5432/ledgercore?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *runtime
+    environment:
+      DATABASE_URL: postgres://ledger_app:${APP_PASSWORD:-ledger-local-app-only}@db:5432/ledgercore?sslmode=disable
+      API_TOKEN: ${API_TOKEN:-ledger-local-demo-token-change-me}
+      HTTP_ADDR: :8080
+      METRICS_ADDR: :9090
+      DB_MAX_CONNS: ${DB_MAX_CONNS:-16}
+      RECONCILE_INTERVAL: ${RECONCILE_INTERVAL:-60s}
+    ports:
+      - 127.0.0.1:${HTTP_PORT:-8080}:8080
+      - 127.0.0.1:${METRICS_PORT:-9090}:9090
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, /bin/bash, /app/healthcheck.sh]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+    stop_grace_period: 12s
+
+  ledgerctl:
+    <<: *runtime
+    profiles: [tools]
+    entrypoint: [/app/ledgerctl]
+    command: [reconcile]
+    environment:
+      DATABASE_URL: postgres://ledger_app:${APP_PASSWORD:-ledger-local-app-only}@db:5432/ledgercore?sslmode=disable
+      FIXTURE_DATABASE_URL: postgres://ledger_fixture:${FIXTURE_PASSWORD:-ledger-local-fixture-only}@db:5432/ledgercore?sslmode=disable
+      API_TOKEN: ${API_TOKEN:-ledger-local-demo-token-change-me}
+      API_URL: http://api:8080
+      METRICS_URL: http://api:9090/metrics
+    depends_on:
+      api:
+        condition: service_healthy
+
+  test-db:
+    profiles: [test]
+    image: postgres:17.9-bookworm@sha256:47f917f7409eacd22fc5dfb1dee634e1b55cf0c01d1a7eb701be2227a03e0641
+    environment:
+      POSTGRES_USER: ledger_bootstrap
+      POSTGRES_DB: ledgercore_test
+      POSTGRES_PASSWORD: isolated-test-bootstrap
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+      LEDGER_MIGRATOR_PASSWORD: isolated-test-migrator
+      LEDGER_APP_PASSWORD: isolated-test-app
+      LEDGER_FIXTURE_PASSWORD: isolated-test-fixture
+    tmpfs: [/var/lib/postgresql/data]
+    volumes:
+      - ./scripts/bootstrap-db.sh:/docker-entrypoint-initdb.d/10-ledger-roles.sh:ro
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, ledger_bootstrap, -d, ledgercore_test]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  integration:
+    profiles: [test]
+    build:
+      context: .
+      target: integration
+    environment:
+      LEDGER_REQUIRE_INTEGRATION: "1"
+      LEDGER_TEST_ADMIN_URL: postgres://ledger_migrator:isolated-test-migrator@test-db:5432/ledgercore_test?sslmode=disable
+      LEDGER_TEST_DATABASE_URL: postgres://ledger_app:isolated-test-app@test-db:5432/ledgercore_test?sslmode=disable
+      LEDGER_TEST_FIXTURE_URL: postgres://ledger_fixture:isolated-test-fixture@test-db:5432/ledgercore_test?sslmode=disable
+    depends_on:
+      test-db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

@@ -1,0 +1,158 @@
+[
+  {
+    "scenario": "hot",
+    "clients": 1,
+    "requests": 1024,
+    "success": 1024,
+    "business_refusals": 0,
+    "infrastructure_errors": 0,
+    "seconds": 4.2153994,
+    "requests_per_second": 242.9188560400706,
+    "p50_ms": 3.8249,
+    "p95_ms": 5.3929,
+    "p99_ms": 7.2598,
+    "reconcile_ok": true,
+    "metrics_before": {
+      "go_goroutines": 12,
+      "go_memstats_heap_alloc_bytes": 407600,
+      "process_cpu_seconds_total": 0.171875,
+      "process_resident_memory_bytes": 61628416
+    },
+    "metrics_after": {
+      "go_goroutines": 13,
+      "go_memstats_heap_alloc_bytes": 2333408,
+      "process_cpu_seconds_total": 2.046875,
+      "process_resident_memory_bytes": 67162112
+    }
+  },
+  {
+    "scenario": "hot",
+    "clients": 8,
+    "requests": 1024,
+    "success": 1024,
+    "business_refusals": 0,
+    "infrastructure_errors": 0,
+    "seconds": 3.5903378,
+    "requests_per_second": 285.2099320570895,
+    "p50_ms": 11.0173,
+    "p95_ms": 108.8162,
+    "p99_ms": 361.3151,
+    "reconcile_ok": true,
+    "metrics_before": {
+      "go_goroutines": 13,
+      "go_memstats_heap_alloc_bytes": 1794144,
+      "process_cpu_seconds_total": 2.046875,
+      "process_resident_memory_bytes": 67198976
+    },
+    "metrics_after": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 2304912,
+      "process_cpu_seconds_total": 4,
+      "process_resident_memory_bytes": 68993024
+    }
+  },
+  {
+    "scenario": "hot",
+    "clients": 32,
+    "requests": 1024,
+    "success": 1024,
+    "business_refusals": 0,
+    "infrastructure_errors": 0,
+    "seconds": 2.9744308999999998,
+    "requests_per_second": 344.26753702699904,
+    "p50_ms": 86.1039,
+    "p95_ms": 113.3984,
+    "p99_ms": 298.5882,
+    "reconcile_ok": true,
+    "metrics_before": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 2580904,
+      "process_cpu_seconds_total": 4,
+      "process_resident_memory_bytes": 69607424
+    },
+    "metrics_after": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 3029328,
+      "process_cpu_seconds_total": 6.1875,
+      "process_resident_memory_bytes": 71946240
+    }
+  },
+  {
+    "scenario": "independent",
+    "clients": 1,
+    "requests": 1024,
+    "success": 1024,
+    "business_refusals": 0,
+    "infrastructure_errors": 0,
+    "seconds": 3.867446,
+    "requests_per_second": 264.77422050624625,
+    "p50_ms": 3.5798,
+    "p95_ms": 4.4696,
+    "p99_ms": 4.9647,
+    "reconcile_ok": true,
+    "metrics_before": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 3884464,
+      "process_cpu_seconds_total": 6.1875,
+      "process_resident_memory_bytes": 72601600
+    },
+    "metrics_after": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 2935136,
+      "process_cpu_seconds_total": 7.859375,
+      "process_resident_memory_bytes": 70451200
+    }
+  },
+  {
+    "scenario": "independent",
+    "clients": 8,
+    "requests": 1024,
+    "success": 1024,
+    "business_refusals": 0,
+    "infrastructure_errors": 0,
+    "seconds": 0.6334127,
+    "requests_per_second": 1616.6395148060656,
+    "p50_ms": 4.8749,
+    "p95_ms": 5.8303,
+    "p99_ms": 6.6375,
+    "reconcile_ok": true,
+    "metrics_before": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 3781312,
+      "process_cpu_seconds_total": 7.859375,
+      "process_resident_memory_bytes": 71229440
+    },
+    "metrics_after": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 2662504,
+      "process_cpu_seconds_total": 9.796875,
+      "process_resident_memory_bytes": 71000064
+    }
+  },
+  {
+    "scenario": "independent",
+    "clients": 32,
+    "requests": 1024,
+    "success": 1024,
+    "business_refusals": 0,
+    "infrastructure_errors": 0,
+    "seconds": 0.4556097,
+    "requests_per_second": 2247.5377499644983,
+    "p50_ms": 13.6758,
+    "p95_ms": 16.9799,
+    "p99_ms": 20.9579,
+    "reconcile_ok": true,
+    "metrics_before": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 3418640,
+      "process_cpu_seconds_total": 9.828125,
+      "process_resident_memory_bytes": 71680000
+    },
+    "metrics_after": {
+      "go_goroutines": 14,
+      "go_memstats_heap_alloc_bytes": 3402728,
+      "process_cpu_seconds_total": 11.890625,
+      "process_resident_memory_bytes": 73461760
+    }
+  }
+]

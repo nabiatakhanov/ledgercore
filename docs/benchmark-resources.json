@@ -1,0 +1,1451 @@
+{
+  "measured_at": "2026-10-29T20:08:23.6607711+03:00",
+  "timezone": "Europe/Moscow",
+  "command": "ledgerctl bench -n 1024",
+  "dataset_before": {
+    "fsync": "on",
+    "accounts": 1,
+    "database": "ledgercore_bench_test",
+    "postings": 0,
+    "wal_level": "replica",
+    "database_bytes": 8328883,
+    "server_version": "PostgreSQL 17.9 on x86_64-windows, compiled by msvc-19.44.35222, 64-bit",
+    "shared_buffers": "128MB",
+    "max_connections": "100",
+    "full_page_writes": "on",
+    "synchronous_commit": "on",
+    "idempotency_records": 0,
+    "journal_transactions": 0,
+    "journal_relation_bytes": 40960,
+    "accounts_relation_bytes": 32768,
+    "postings_relation_bytes": 16384
+  },
+  "dataset_after": {
+    "fsync": "on",
+    "accounts": 89,
+    "database": "ledgercore_bench_test",
+    "postings": 12464,
+    "wal_level": "replica",
+    "database_bytes": 20330163,
+    "server_version": "PostgreSQL 17.9 on x86_64-windows, compiled by msvc-19.44.35222, 64-bit",
+    "shared_buffers": "128MB",
+    "max_connections": "100",
+    "full_page_writes": "on",
+    "synchronous_commit": "on",
+    "idempotency_records": 6232,
+    "journal_transactions": 6232,
+    "journal_relation_bytes": 1507328,
+    "accounts_relation_bytes": 401408,
+    "postings_relation_bytes": 2727936
+  },
+  "conditions": {
+    "host": "Windows amd64; native PostgreSQL and API on the same host",
+    "cpu": "AMD Ryzen 7 5800HS with Radeon Graphics",
+    "logical_processors": 16,
+    "physical_memory_bytes": 16539389952,
+    "go": "go1.26.2 windows/amd64",
+    "api_max_pool_connections": 16,
+    "cli_max_pool_connections": 4,
+    "http_addr": "127.0.0.1:18080",
+    "metrics_addr": "127.0.0.1:19090",
+    "postgres_addr": "127.0.0.1:55432",
+    "request_amount_minor": "1",
+    "starting_balance_minor_per_client": "1025",
+    "requests_per_case": 1024,
+    "scenario_order": [
+      "hot/1",
+      "hot/8",
+      "hot/32",
+      "independent/1",
+      "independent/8",
+      "independent/32"
+    ],
+    "api_build_flags": "go build -trimpath (no race instrumentation)",
+    "database_initial_state": "fresh isolated ledgercore_bench_test, migration system account only"
+  },
+  "method": {
+    "sample_period_target_ms": 100,
+    "counters": "Windows Get-Process TotalProcessorTime, WorkingSet64 and PrivateMemorySize64",
+    "cpu": "API CPU delta is exact to the process counter resolution. PostgreSQL sums observed maximum CPU per PID/start-time minus initial baseline; backends created during the run start at zero. Short-lived processes and CPU after their final observed sample may be missed.",
+    "memory": "Peak sampled working sets are observations, not continuous peaks. PostgreSQL aggregate working sets can double-count shared memory and are not unique physical RAM.",
+    "scope": "Resource totals include all six cases, fixture setup, between-case reconciliation and scraping; latency/throughput exclude setup. PostgreSQL counters include the whole shared native cluster, including idle demo API and background workers. Host processes and caches were not controlled.",
+    "sampling_overhead": "Sampler, CLI load generator, API, database and other desktop applications share the host. No claim of production capacity or statistically stable benchmark is made."
+  },
+  "wall_seconds_including_setup": 16.7752444,
+  "api_cpu_seconds": 11.71875,
+  "api_sampled_peak_working_set_bytes": 74219520.0,
+  "api_os_peak_working_set_bytes_since_start": 74219520,
+  "api_sampled_peak_private_bytes": 64823296.0,
+  "postgres_observed_cpu_seconds": 20.671875,
+  "postgres_sampled_peak_aggregate_working_set_bytes": 917438464.0,
+  "postgres_sampled_peak_aggregate_private_bytes": 221536256.0,
+  "sample_count": 135,
+  "cli_exit_code": 0,
+  "progress": [
+    "hot clients=1 success=1024 refusals=0 infra=0 reconcile=true",
+    "hot clients=8 success=1024 refusals=0 infra=0 reconcile=true",
+    "hot clients=32 success=1024 refusals=0 infra=0 reconcile=true",
+    "independent clients=1 success=1024 refusals=0 infra=0 reconcile=true",
+    "independent clients=8 success=1024 refusals=0 infra=0 reconcile=true",
+    "independent clients=32 success=1024 refusals=0 infra=0 reconcile=true"
+  ],
+  "final_reconciliation": {
+    "ok": true,
+    "accounts": 89,
+    "transactions": 6232,
+    "issue_count": 0,
+    "issues": []
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 0.0660138,
+      "api_cpu_seconds": 0.0,
+      "api_working_set_bytes": 61505536,
+      "api_private_bytes": 50008064,
+      "postgres_observed_cpu_seconds": 0.0,
+      "postgres_aggregate_working_set_bytes": 439877632,
+      "postgres_aggregate_private_bytes": 104091648,
+      "postgres_processes": 23
+    },
+    {
+      "elapsed_seconds": 0.1963393,
+      "api_cpu_seconds": 0.0,
+      "api_working_set_bytes": 61505536,
+      "api_private_bytes": 50008064,
+      "postgres_observed_cpu_seconds": 0.078125,
+      "postgres_aggregate_working_set_bytes": 469999616,
+      "postgres_aggregate_private_bytes": 110551040,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 0.3187448,
+      "api_cpu_seconds": 0.0,
+      "api_working_set_bytes": 61505536,
+      "api_private_bytes": 50008064,
+      "postgres_observed_cpu_seconds": 0.125,
+      "postgres_aggregate_working_set_bytes": 477163520,
+      "postgres_aggregate_private_bytes": 114024448,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 0.4433685,
+      "api_cpu_seconds": 0.046875,
+      "api_working_set_bytes": 63987712,
+      "api_private_bytes": 53104640,
+      "postgres_observed_cpu_seconds": 0.21875,
+      "postgres_aggregate_working_set_bytes": 480079872,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 0.5666277,
+      "api_cpu_seconds": 0.0625,
+      "api_working_set_bytes": 64319488,
+      "api_private_bytes": 53276672,
+      "postgres_observed_cpu_seconds": 0.328125,
+      "postgres_aggregate_working_set_bytes": 480288768,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 0.6912267,
+      "api_cpu_seconds": 0.109375,
+      "api_working_set_bytes": 64688128,
+      "api_private_bytes": 53735424,
+      "postgres_observed_cpu_seconds": 0.390625,
+      "postgres_aggregate_working_set_bytes": 480452608,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 0.8126244,
+      "api_cpu_seconds": 0.203125,
+      "api_working_set_bytes": 65044480,
+      "api_private_bytes": 54054912,
+      "postgres_observed_cpu_seconds": 0.453125,
+      "postgres_aggregate_working_set_bytes": 480628736,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 0.9355625,
+      "api_cpu_seconds": 0.265625,
+      "api_working_set_bytes": 66080768,
+      "api_private_bytes": 55300096,
+      "postgres_observed_cpu_seconds": 0.515625,
+      "postgres_aggregate_working_set_bytes": 480792576,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.0579525,
+      "api_cpu_seconds": 0.3125,
+      "api_working_set_bytes": 66220032,
+      "api_private_bytes": 55439360,
+      "postgres_observed_cpu_seconds": 0.59375,
+      "postgres_aggregate_working_set_bytes": 480907264,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.198099,
+      "api_cpu_seconds": 0.375,
+      "api_working_set_bytes": 66396160,
+      "api_private_bytes": 55578624,
+      "postgres_observed_cpu_seconds": 0.625,
+      "postgres_aggregate_working_set_bytes": 481075200,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.3196457,
+      "api_cpu_seconds": 0.421875,
+      "api_working_set_bytes": 66666496,
+      "api_private_bytes": 55775232,
+      "postgres_observed_cpu_seconds": 0.703125,
+      "postgres_aggregate_working_set_bytes": 481247232,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.4424203,
+      "api_cpu_seconds": 0.4375,
+      "api_working_set_bytes": 66887680,
+      "api_private_bytes": 55963648,
+      "postgres_observed_cpu_seconds": 0.796875,
+      "postgres_aggregate_working_set_bytes": 481386496,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.5656197,
+      "api_cpu_seconds": 0.46875,
+      "api_working_set_bytes": 66621440,
+      "api_private_bytes": 55644160,
+      "postgres_observed_cpu_seconds": 0.859375,
+      "postgres_aggregate_working_set_bytes": 481558528,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.6880593,
+      "api_cpu_seconds": 0.515625,
+      "api_working_set_bytes": 66621440,
+      "api_private_bytes": 55644160,
+      "postgres_observed_cpu_seconds": 0.9375,
+      "postgres_aggregate_working_set_bytes": 481710080,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.8120048,
+      "api_cpu_seconds": 0.578125,
+      "api_working_set_bytes": 66633728,
+      "api_private_bytes": 55644160,
+      "postgres_observed_cpu_seconds": 0.96875,
+      "postgres_aggregate_working_set_bytes": 481873920,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 1.934595,
+      "api_cpu_seconds": 0.65625,
+      "api_working_set_bytes": 66637824,
+      "api_private_bytes": 55644160,
+      "postgres_observed_cpu_seconds": 1.0,
+      "postgres_aggregate_working_set_bytes": 482029568,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.0568164,
+      "api_cpu_seconds": 0.75,
+      "api_working_set_bytes": 66740224,
+      "api_private_bytes": 55644160,
+      "postgres_observed_cpu_seconds": 1.046875,
+      "postgres_aggregate_working_set_bytes": 482193408,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.1795658,
+      "api_cpu_seconds": 0.796875,
+      "api_working_set_bytes": 67137536,
+      "api_private_bytes": 56250368,
+      "postgres_observed_cpu_seconds": 1.140625,
+      "postgres_aggregate_working_set_bytes": 482340864,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.3021597,
+      "api_cpu_seconds": 0.8125,
+      "api_working_set_bytes": 67350528,
+      "api_private_bytes": 56479744,
+      "postgres_observed_cpu_seconds": 1.21875,
+      "postgres_aggregate_working_set_bytes": 482504704,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.425375,
+      "api_cpu_seconds": 0.890625,
+      "api_working_set_bytes": 67579904,
+      "api_private_bytes": 56709120,
+      "postgres_observed_cpu_seconds": 1.25,
+      "postgres_aggregate_working_set_bytes": 482635776,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.5487288,
+      "api_cpu_seconds": 0.9375,
+      "api_working_set_bytes": 67710976,
+      "api_private_bytes": 56832000,
+      "postgres_observed_cpu_seconds": 1.328125,
+      "postgres_aggregate_working_set_bytes": 482770944,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.6717847,
+      "api_cpu_seconds": 0.984375,
+      "api_working_set_bytes": 67784704,
+      "api_private_bytes": 56897536,
+      "postgres_observed_cpu_seconds": 1.421875,
+      "postgres_aggregate_working_set_bytes": 482914304,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.796542,
+      "api_cpu_seconds": 1.0625,
+      "api_working_set_bytes": 67424256,
+      "api_private_bytes": 56479744,
+      "postgres_observed_cpu_seconds": 1.5,
+      "postgres_aggregate_working_set_bytes": 483045376,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 2.9246303,
+      "api_cpu_seconds": 1.140625,
+      "api_working_set_bytes": 67424256,
+      "api_private_bytes": 56479744,
+      "postgres_observed_cpu_seconds": 1.546875,
+      "postgres_aggregate_working_set_bytes": 483160064,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.0409608,
+      "api_cpu_seconds": 1.203125,
+      "api_working_set_bytes": 66899968,
+      "api_private_bytes": 55955456,
+      "postgres_observed_cpu_seconds": 1.625,
+      "postgres_aggregate_working_set_bytes": 483258368,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.1631593,
+      "api_cpu_seconds": 1.265625,
+      "api_working_set_bytes": 66969600,
+      "api_private_bytes": 56020992,
+      "postgres_observed_cpu_seconds": 1.6875,
+      "postgres_aggregate_working_set_bytes": 483356672,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.2881828,
+      "api_cpu_seconds": 1.296875,
+      "api_working_set_bytes": 66969600,
+      "api_private_bytes": 56020992,
+      "postgres_observed_cpu_seconds": 1.765625,
+      "postgres_aggregate_working_set_bytes": 483504128,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.4092286,
+      "api_cpu_seconds": 1.3125,
+      "api_working_set_bytes": 66973696,
+      "api_private_bytes": 56020992,
+      "postgres_observed_cpu_seconds": 1.875,
+      "postgres_aggregate_working_set_bytes": 483627008,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.5334846,
+      "api_cpu_seconds": 1.40625,
+      "api_working_set_bytes": 66834432,
+      "api_private_bytes": 55857152,
+      "postgres_observed_cpu_seconds": 1.90625,
+      "postgres_aggregate_working_set_bytes": 483807232,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.6573519,
+      "api_cpu_seconds": 1.4375,
+      "api_working_set_bytes": 66834432,
+      "api_private_bytes": 55857152,
+      "postgres_observed_cpu_seconds": 1.984375,
+      "postgres_aggregate_working_set_bytes": 483905536,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.7822028,
+      "api_cpu_seconds": 1.46875,
+      "api_working_set_bytes": 66834432,
+      "api_private_bytes": 55857152,
+      "postgres_observed_cpu_seconds": 2.046875,
+      "postgres_aggregate_working_set_bytes": 484057088,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 3.9071049,
+      "api_cpu_seconds": 1.546875,
+      "api_working_set_bytes": 66834432,
+      "api_private_bytes": 55857152,
+      "postgres_observed_cpu_seconds": 2.125,
+      "postgres_aggregate_working_set_bytes": 484204544,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.0308652,
+      "api_cpu_seconds": 1.59375,
+      "api_working_set_bytes": 66908160,
+      "api_private_bytes": 55939072,
+      "postgres_observed_cpu_seconds": 2.1875,
+      "postgres_aggregate_working_set_bytes": 484356096,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.1537502,
+      "api_cpu_seconds": 1.65625,
+      "api_working_set_bytes": 67158016,
+      "api_private_bytes": 56446976,
+      "postgres_observed_cpu_seconds": 2.28125,
+      "postgres_aggregate_working_set_bytes": 484474880,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.2767922,
+      "api_cpu_seconds": 1.703125,
+      "api_working_set_bytes": 67158016,
+      "api_private_bytes": 56446976,
+      "postgres_observed_cpu_seconds": 2.375,
+      "postgres_aggregate_working_set_bytes": 484630528,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.3989588,
+      "api_cpu_seconds": 1.796875,
+      "api_working_set_bytes": 67158016,
+      "api_private_bytes": 56446976,
+      "postgres_observed_cpu_seconds": 2.453125,
+      "postgres_aggregate_working_set_bytes": 484761600,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.52306,
+      "api_cpu_seconds": 1.859375,
+      "api_working_set_bytes": 67158016,
+      "api_private_bytes": 56446976,
+      "postgres_observed_cpu_seconds": 2.546875,
+      "postgres_aggregate_working_set_bytes": 484921344,
+      "postgres_aggregate_private_bytes": 115683328,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.6464228,
+      "api_cpu_seconds": 1.875,
+      "api_working_set_bytes": 67784704,
+      "api_private_bytes": 57221120,
+      "postgres_observed_cpu_seconds": 2.625,
+      "postgres_aggregate_working_set_bytes": 489439232,
+      "postgres_aggregate_private_bytes": 117641216,
+      "postgres_processes": 25
+    },
+    {
+      "elapsed_seconds": 4.8083578,
+      "api_cpu_seconds": 1.9375,
+      "api_working_set_bytes": 67846144,
+      "api_private_bytes": 57528320,
+      "postgres_observed_cpu_seconds": 3.328125,
+      "postgres_aggregate_working_set_bytes": 599224320,
+      "postgres_aggregate_private_bytes": 142909440,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 4.9375132,
+      "api_cpu_seconds": 1.9375,
+      "api_working_set_bytes": 67911680,
+      "api_private_bytes": 57610240,
+      "postgres_observed_cpu_seconds": 3.484375,
+      "postgres_aggregate_working_set_bytes": 632393728,
+      "postgres_aggregate_private_bytes": 158056448,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.0627953,
+      "api_cpu_seconds": 1.96875,
+      "api_working_set_bytes": 67915776,
+      "api_private_bytes": 57610240,
+      "postgres_observed_cpu_seconds": 3.5625,
+      "postgres_aggregate_working_set_bytes": 638349312,
+      "postgres_aggregate_private_bytes": 161959936,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.1862018,
+      "api_cpu_seconds": 2.0,
+      "api_working_set_bytes": 68202496,
+      "api_private_bytes": 57921536,
+      "postgres_observed_cpu_seconds": 3.6875,
+      "postgres_aggregate_working_set_bytes": 640262144,
+      "postgres_aggregate_private_bytes": 162816000,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.3095156,
+      "api_cpu_seconds": 2.125,
+      "api_working_set_bytes": 68255744,
+      "api_private_bytes": 58257408,
+      "postgres_observed_cpu_seconds": 3.75,
+      "postgres_aggregate_working_set_bytes": 641634304,
+      "postgres_aggregate_private_bytes": 163131392,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.4323987,
+      "api_cpu_seconds": 2.203125,
+      "api_working_set_bytes": 68284416,
+      "api_private_bytes": 58290176,
+      "postgres_observed_cpu_seconds": 3.828125,
+      "postgres_aggregate_working_set_bytes": 642387968,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.5559662,
+      "api_cpu_seconds": 2.28125,
+      "api_working_set_bytes": 67395584,
+      "api_private_bytes": 57356288,
+      "postgres_observed_cpu_seconds": 3.9375,
+      "postgres_aggregate_working_set_bytes": 643100672,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.6781453,
+      "api_cpu_seconds": 2.390625,
+      "api_working_set_bytes": 67444736,
+      "api_private_bytes": 57413632,
+      "postgres_observed_cpu_seconds": 4.03125,
+      "postgres_aggregate_working_set_bytes": 643674112,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.8008755,
+      "api_cpu_seconds": 2.453125,
+      "api_working_set_bytes": 67571712,
+      "api_private_bytes": 57544704,
+      "postgres_observed_cpu_seconds": 4.125,
+      "postgres_aggregate_working_set_bytes": 644419584,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 5.923683,
+      "api_cpu_seconds": 2.515625,
+      "api_working_set_bytes": 67448832,
+      "api_private_bytes": 57446400,
+      "postgres_observed_cpu_seconds": 4.203125,
+      "postgres_aggregate_working_set_bytes": 645115904,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.0465537,
+      "api_cpu_seconds": 2.546875,
+      "api_working_set_bytes": 67543040,
+      "api_private_bytes": 57536512,
+      "postgres_observed_cpu_seconds": 4.34375,
+      "postgres_aggregate_working_set_bytes": 645951488,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.1671873,
+      "api_cpu_seconds": 2.609375,
+      "api_working_set_bytes": 67751936,
+      "api_private_bytes": 57741312,
+      "postgres_observed_cpu_seconds": 4.46875,
+      "postgres_aggregate_working_set_bytes": 646848512,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.2909271,
+      "api_cpu_seconds": 2.65625,
+      "api_working_set_bytes": 67584000,
+      "api_private_bytes": 57552896,
+      "postgres_observed_cpu_seconds": 4.625,
+      "postgres_aggregate_working_set_bytes": 647561216,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.4131201,
+      "api_cpu_seconds": 2.71875,
+      "api_working_set_bytes": 67764224,
+      "api_private_bytes": 57724928,
+      "postgres_observed_cpu_seconds": 4.796875,
+      "postgres_aggregate_working_set_bytes": 648183808,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.5382066,
+      "api_cpu_seconds": 2.828125,
+      "api_working_set_bytes": 67645440,
+      "api_private_bytes": 57593856,
+      "postgres_observed_cpu_seconds": 4.90625,
+      "postgres_aggregate_working_set_bytes": 648937472,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.6589821,
+      "api_cpu_seconds": 2.859375,
+      "api_working_set_bytes": 67911680,
+      "api_private_bytes": 57880576,
+      "postgres_observed_cpu_seconds": 5.046875,
+      "postgres_aggregate_working_set_bytes": 649535488,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.7818647,
+      "api_cpu_seconds": 2.984375,
+      "api_working_set_bytes": 67842048,
+      "api_private_bytes": 57798656,
+      "postgres_observed_cpu_seconds": 5.171875,
+      "postgres_aggregate_working_set_bytes": 650194944,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 6.9051616,
+      "api_cpu_seconds": 3.125,
+      "api_working_set_bytes": 67915776,
+      "api_private_bytes": 57872384,
+      "postgres_observed_cpu_seconds": 5.25,
+      "postgres_aggregate_working_set_bytes": 650825728,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.0274063,
+      "api_cpu_seconds": 3.171875,
+      "api_working_set_bytes": 68308992,
+      "api_private_bytes": 58306560,
+      "postgres_observed_cpu_seconds": 5.4375,
+      "postgres_aggregate_working_set_bytes": 651378688,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.1516939,
+      "api_cpu_seconds": 3.28125,
+      "api_working_set_bytes": 68653056,
+      "api_private_bytes": 58626048,
+      "postgres_observed_cpu_seconds": 5.578125,
+      "postgres_aggregate_working_set_bytes": 651927552,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.2752976,
+      "api_cpu_seconds": 3.34375,
+      "api_working_set_bytes": 68714496,
+      "api_private_bytes": 58683392,
+      "postgres_observed_cpu_seconds": 5.703125,
+      "postgres_aggregate_working_set_bytes": 652632064,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.3976743,
+      "api_cpu_seconds": 3.375,
+      "api_working_set_bytes": 68173824,
+      "api_private_bytes": 58134528,
+      "postgres_observed_cpu_seconds": 5.8125,
+      "postgres_aggregate_working_set_bytes": 653197312,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.520931,
+      "api_cpu_seconds": 3.453125,
+      "api_working_set_bytes": 68198400,
+      "api_private_bytes": 58167296,
+      "postgres_observed_cpu_seconds": 5.90625,
+      "postgres_aggregate_working_set_bytes": 653795328,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.6434965,
+      "api_cpu_seconds": 3.53125,
+      "api_working_set_bytes": 68304896,
+      "api_private_bytes": 58290176,
+      "postgres_observed_cpu_seconds": 6.03125,
+      "postgres_aggregate_working_set_bytes": 654323712,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.7673863,
+      "api_cpu_seconds": 3.5625,
+      "api_working_set_bytes": 68747264,
+      "api_private_bytes": 58736640,
+      "postgres_observed_cpu_seconds": 6.140625,
+      "postgres_aggregate_working_set_bytes": 654872576,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 7.8899491,
+      "api_cpu_seconds": 3.65625,
+      "api_working_set_bytes": 68771840,
+      "api_private_bytes": 58753024,
+      "postgres_observed_cpu_seconds": 6.28125,
+      "postgres_aggregate_working_set_bytes": 655536128,
+      "postgres_aggregate_private_bytes": 163188736,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 8.0130838,
+      "api_cpu_seconds": 3.6875,
+      "api_working_set_bytes": 68771840,
+      "api_private_bytes": 58753024,
+      "postgres_observed_cpu_seconds": 6.5,
+      "postgres_aggregate_working_set_bytes": 656302080,
+      "postgres_aggregate_private_bytes": 163467264,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 8.1352527,
+      "api_cpu_seconds": 3.78125,
+      "api_working_set_bytes": 68960256,
+      "api_private_bytes": 59203584,
+      "postgres_observed_cpu_seconds": 6.6875,
+      "postgres_aggregate_working_set_bytes": 656764928,
+      "postgres_aggregate_private_bytes": 163467264,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 8.2595444,
+      "api_cpu_seconds": 3.828125,
+      "api_working_set_bytes": 69607424,
+      "api_private_bytes": 59777024,
+      "postgres_observed_cpu_seconds": 6.8125,
+      "postgres_aggregate_working_set_bytes": 659984384,
+      "postgres_aggregate_private_bytes": 165777408,
+      "postgres_processes": 32
+    },
+    {
+      "elapsed_seconds": 8.3860522,
+      "api_cpu_seconds": 4.0,
+      "api_working_set_bytes": 71753728,
+      "api_private_bytes": 62517248,
+      "postgres_observed_cpu_seconds": 7.3125,
+      "postgres_aggregate_working_set_bytes": 741666816,
+      "postgres_aggregate_private_bytes": 180269056,
+      "postgres_processes": 38
+    },
+    {
+      "elapsed_seconds": 8.506085,
+      "api_cpu_seconds": 4.03125,
+      "api_working_set_bytes": 71643136,
+      "api_private_bytes": 62222336,
+      "postgres_observed_cpu_seconds": 7.59375,
+      "postgres_aggregate_working_set_bytes": 819953664,
+      "postgres_aggregate_private_bytes": 207675392,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 8.6306718,
+      "api_cpu_seconds": 4.0625,
+      "api_working_set_bytes": 71647232,
+      "api_private_bytes": 62222336,
+      "postgres_observed_cpu_seconds": 7.71875,
+      "postgres_aggregate_working_set_bytes": 828801024,
+      "postgres_aggregate_private_bytes": 213340160,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 8.7545151,
+      "api_cpu_seconds": 4.078125,
+      "api_working_set_bytes": 71655424,
+      "api_private_bytes": 62222336,
+      "postgres_observed_cpu_seconds": 7.828125,
+      "postgres_aggregate_working_set_bytes": 832978944,
+      "postgres_aggregate_private_bytes": 215273472,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 8.8784906,
+      "api_cpu_seconds": 4.15625,
+      "api_working_set_bytes": 70971392,
+      "api_private_bytes": 61468672,
+      "postgres_observed_cpu_seconds": 8.046875,
+      "postgres_aggregate_working_set_bytes": 834916352,
+      "postgres_aggregate_private_bytes": 215814144,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.0006795,
+      "api_cpu_seconds": 4.25,
+      "api_working_set_bytes": 71045120,
+      "api_private_bytes": 61534208,
+      "postgres_observed_cpu_seconds": 8.171875,
+      "postgres_aggregate_working_set_bytes": 836587520,
+      "postgres_aggregate_private_bytes": 216072192,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.1243076,
+      "api_cpu_seconds": 4.34375,
+      "api_working_set_bytes": 71229440,
+      "api_private_bytes": 61714432,
+      "postgres_observed_cpu_seconds": 8.34375,
+      "postgres_aggregate_working_set_bytes": 838299648,
+      "postgres_aggregate_private_bytes": 216350720,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.2470641,
+      "api_cpu_seconds": 4.59375,
+      "api_working_set_bytes": 70930432,
+      "api_private_bytes": 61411328,
+      "postgres_observed_cpu_seconds": 8.484375,
+      "postgres_aggregate_working_set_bytes": 839413760,
+      "postgres_aggregate_private_bytes": 216350720,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.3709315,
+      "api_cpu_seconds": 4.625,
+      "api_working_set_bytes": 70930432,
+      "api_private_bytes": 61411328,
+      "postgres_observed_cpu_seconds": 8.640625,
+      "postgres_aggregate_working_set_bytes": 840798208,
+      "postgres_aggregate_private_bytes": 216350720,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.4920135,
+      "api_cpu_seconds": 4.796875,
+      "api_working_set_bytes": 71008256,
+      "api_private_bytes": 61485056,
+      "postgres_observed_cpu_seconds": 8.796875,
+      "postgres_aggregate_working_set_bytes": 841666560,
+      "postgres_aggregate_private_bytes": 216350720,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.6141239,
+      "api_cpu_seconds": 4.859375,
+      "api_working_set_bytes": 71008256,
+      "api_private_bytes": 61485056,
+      "postgres_observed_cpu_seconds": 8.921875,
+      "postgres_aggregate_working_set_bytes": 842616832,
+      "postgres_aggregate_private_bytes": 216350720,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.7380111,
+      "api_cpu_seconds": 4.9375,
+      "api_working_set_bytes": 71053312,
+      "api_private_bytes": 61517824,
+      "postgres_observed_cpu_seconds": 9.046875,
+      "postgres_aggregate_working_set_bytes": 844083200,
+      "postgres_aggregate_private_bytes": 216440832,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.8616987,
+      "api_cpu_seconds": 5.0625,
+      "api_working_set_bytes": 71274496,
+      "api_private_bytes": 61730816,
+      "postgres_observed_cpu_seconds": 9.203125,
+      "postgres_aggregate_working_set_bytes": 845119488,
+      "postgres_aggregate_private_bytes": 216440832,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 9.9845419,
+      "api_cpu_seconds": 5.109375,
+      "api_working_set_bytes": 71540736,
+      "api_private_bytes": 61992960,
+      "postgres_observed_cpu_seconds": 9.359375,
+      "postgres_aggregate_working_set_bytes": 847499264,
+      "postgres_aggregate_private_bytes": 217653248,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.1056037,
+      "api_cpu_seconds": 5.21875,
+      "api_working_set_bytes": 71561216,
+      "api_private_bytes": 62009344,
+      "postgres_observed_cpu_seconds": 9.515625,
+      "postgres_aggregate_working_set_bytes": 848322560,
+      "postgres_aggregate_private_bytes": 217653248,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.2282477,
+      "api_cpu_seconds": 5.328125,
+      "api_working_set_bytes": 71581696,
+      "api_private_bytes": 62009344,
+      "postgres_observed_cpu_seconds": 9.65625,
+      "postgres_aggregate_working_set_bytes": 849145856,
+      "postgres_aggregate_private_bytes": 217653248,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.3521007,
+      "api_cpu_seconds": 5.375,
+      "api_working_set_bytes": 71778304,
+      "api_private_bytes": 62197760,
+      "postgres_observed_cpu_seconds": 9.796875,
+      "postgres_aggregate_working_set_bytes": 850386944,
+      "postgres_aggregate_private_bytes": 217935872,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.4748638,
+      "api_cpu_seconds": 5.484375,
+      "api_working_set_bytes": 71819264,
+      "api_private_bytes": 62238720,
+      "postgres_observed_cpu_seconds": 9.9375,
+      "postgres_aggregate_working_set_bytes": 851222528,
+      "postgres_aggregate_private_bytes": 218214400,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.5976711,
+      "api_cpu_seconds": 5.5625,
+      "api_working_set_bytes": 71831552,
+      "api_private_bytes": 62246912,
+      "postgres_observed_cpu_seconds": 10.078125,
+      "postgres_aggregate_working_set_bytes": 852406272,
+      "postgres_aggregate_private_bytes": 218214400,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.7214115,
+      "api_cpu_seconds": 5.65625,
+      "api_working_set_bytes": 71770112,
+      "api_private_bytes": 62189568,
+      "postgres_observed_cpu_seconds": 10.21875,
+      "postgres_aggregate_working_set_bytes": 853233664,
+      "postgres_aggregate_private_bytes": 218214400,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.8441683,
+      "api_cpu_seconds": 5.71875,
+      "api_working_set_bytes": 71774208,
+      "api_private_bytes": 62189568,
+      "postgres_observed_cpu_seconds": 10.34375,
+      "postgres_aggregate_working_set_bytes": 854216704,
+      "postgres_aggregate_private_bytes": 218214400,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 10.9672886,
+      "api_cpu_seconds": 5.84375,
+      "api_working_set_bytes": 71774208,
+      "api_private_bytes": 62189568,
+      "postgres_observed_cpu_seconds": 10.515625,
+      "postgres_aggregate_working_set_bytes": 855379968,
+      "postgres_aggregate_private_bytes": 218214400,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.0900458,
+      "api_cpu_seconds": 5.9375,
+      "api_working_set_bytes": 71774208,
+      "api_private_bytes": 62189568,
+      "postgres_observed_cpu_seconds": 10.65625,
+      "postgres_aggregate_working_set_bytes": 856195072,
+      "postgres_aggregate_private_bytes": 218501120,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.2130718,
+      "api_cpu_seconds": 5.984375,
+      "api_working_set_bytes": 71933952,
+      "api_private_bytes": 62345216,
+      "postgres_observed_cpu_seconds": 10.765625,
+      "postgres_aggregate_working_set_bytes": 857399296,
+      "postgres_aggregate_private_bytes": 218501120,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.3351173,
+      "api_cpu_seconds": 6.03125,
+      "api_working_set_bytes": 73428992,
+      "api_private_bytes": 63930368,
+      "postgres_observed_cpu_seconds": 10.859375,
+      "postgres_aggregate_working_set_bytes": 859496448,
+      "postgres_aggregate_private_bytes": 218501120,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.4574416,
+      "api_cpu_seconds": 6.0625,
+      "api_working_set_bytes": 73453568,
+      "api_private_bytes": 63954944,
+      "postgres_observed_cpu_seconds": 10.9375,
+      "postgres_aggregate_working_set_bytes": 859725824,
+      "postgres_aggregate_private_bytes": 218501120,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.5809269,
+      "api_cpu_seconds": 6.109375,
+      "api_working_set_bytes": 73560064,
+      "api_private_bytes": 64061440,
+      "postgres_observed_cpu_seconds": 11.015625,
+      "postgres_aggregate_working_set_bytes": 859897856,
+      "postgres_aggregate_private_bytes": 218501120,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.706394,
+      "api_cpu_seconds": 6.15625,
+      "api_working_set_bytes": 73658368,
+      "api_private_bytes": 64159744,
+      "postgres_observed_cpu_seconds": 11.125,
+      "postgres_aggregate_working_set_bytes": 868274176,
+      "postgres_aggregate_private_bytes": 219717632,
+      "postgres_processes": 41
+    },
+    {
+      "elapsed_seconds": 11.827422,
+      "api_cpu_seconds": 6.171875,
+      "api_working_set_bytes": 73719808,
+      "api_private_bytes": 64225280,
+      "postgres_observed_cpu_seconds": 11.21875,
+      "postgres_aggregate_working_set_bytes": 860393472,
+      "postgres_aggregate_private_bytes": 218779648,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 11.9500148,
+      "api_cpu_seconds": 6.234375,
+      "api_working_set_bytes": 73801728,
+      "api_private_bytes": 64290816,
+      "postgres_observed_cpu_seconds": 11.328125,
+      "postgres_aggregate_working_set_bytes": 860540928,
+      "postgres_aggregate_private_bytes": 218779648,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.0731027,
+      "api_cpu_seconds": 6.265625,
+      "api_working_set_bytes": 73822208,
+      "api_private_bytes": 64307200,
+      "postgres_observed_cpu_seconds": 11.421875,
+      "postgres_aggregate_working_set_bytes": 860958720,
+      "postgres_aggregate_private_bytes": 218959872,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.1964091,
+      "api_cpu_seconds": 6.34375,
+      "api_working_set_bytes": 73846784,
+      "api_private_bytes": 64315392,
+      "postgres_observed_cpu_seconds": 11.453125,
+      "postgres_aggregate_working_set_bytes": 861822976,
+      "postgres_aggregate_private_bytes": 219410432,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.319616,
+      "api_cpu_seconds": 6.390625,
+      "api_working_set_bytes": 71843840,
+      "api_private_bytes": 62234624,
+      "postgres_observed_cpu_seconds": 11.5625,
+      "postgres_aggregate_working_set_bytes": 862797824,
+      "postgres_aggregate_private_bytes": 219951104,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.4436495,
+      "api_cpu_seconds": 6.421875,
+      "api_working_set_bytes": 71847936,
+      "api_private_bytes": 62234624,
+      "postgres_observed_cpu_seconds": 11.65625,
+      "postgres_aggregate_working_set_bytes": 863211520,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.56457,
+      "api_cpu_seconds": 6.484375,
+      "api_working_set_bytes": 71884800,
+      "api_private_bytes": 62275584,
+      "postgres_observed_cpu_seconds": 11.71875,
+      "postgres_aggregate_working_set_bytes": 863338496,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.6869302,
+      "api_cpu_seconds": 6.515625,
+      "api_working_set_bytes": 71913472,
+      "api_private_bytes": 62300160,
+      "postgres_observed_cpu_seconds": 11.8125,
+      "postgres_aggregate_working_set_bytes": 863518720,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.8109336,
+      "api_cpu_seconds": 6.578125,
+      "api_working_set_bytes": 71942144,
+      "api_private_bytes": 62332928,
+      "postgres_observed_cpu_seconds": 11.890625,
+      "postgres_aggregate_working_set_bytes": 863670272,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 12.9331593,
+      "api_cpu_seconds": 6.65625,
+      "api_working_set_bytes": 70381568,
+      "api_private_bytes": 60710912,
+      "postgres_observed_cpu_seconds": 11.953125,
+      "postgres_aggregate_working_set_bytes": 863854592,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.0553363,
+      "api_cpu_seconds": 6.703125,
+      "api_working_set_bytes": 70463488,
+      "api_private_bytes": 60792832,
+      "postgres_observed_cpu_seconds": 12.0625,
+      "postgres_aggregate_working_set_bytes": 863989760,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.1781072,
+      "api_cpu_seconds": 6.75,
+      "api_working_set_bytes": 70524928,
+      "api_private_bytes": 60858368,
+      "postgres_observed_cpu_seconds": 12.15625,
+      "postgres_aggregate_working_set_bytes": 864137216,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.3022378,
+      "api_cpu_seconds": 6.84375,
+      "api_working_set_bytes": 70586368,
+      "api_private_bytes": 60923904,
+      "postgres_observed_cpu_seconds": 12.21875,
+      "postgres_aggregate_working_set_bytes": 864313344,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.4240024,
+      "api_cpu_seconds": 6.859375,
+      "api_working_set_bytes": 70356992,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.296875,
+      "postgres_aggregate_working_set_bytes": 864423936,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.5463306,
+      "api_cpu_seconds": 6.953125,
+      "api_working_set_bytes": 70356992,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.375,
+      "postgres_aggregate_working_set_bytes": 864571392,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.6693174,
+      "api_cpu_seconds": 7.046875,
+      "api_working_set_bytes": 70356992,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.4375,
+      "postgres_aggregate_working_set_bytes": 864694272,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.7917717,
+      "api_cpu_seconds": 7.109375,
+      "api_working_set_bytes": 70356992,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.484375,
+      "postgres_aggregate_working_set_bytes": 864817152,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 13.9148146,
+      "api_cpu_seconds": 7.234375,
+      "api_working_set_bytes": 70356992,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.515625,
+      "postgres_aggregate_working_set_bytes": 864964608,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.0377902,
+      "api_cpu_seconds": 7.265625,
+      "api_working_set_bytes": 70344704,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.609375,
+      "postgres_aggregate_working_set_bytes": 865079296,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.1615682,
+      "api_cpu_seconds": 7.3125,
+      "api_working_set_bytes": 70344704,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.671875,
+      "postgres_aggregate_working_set_bytes": 865185792,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.2843669,
+      "api_cpu_seconds": 7.34375,
+      "api_working_set_bytes": 70344704,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.734375,
+      "postgres_aggregate_working_set_bytes": 865304576,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.4091317,
+      "api_cpu_seconds": 7.375,
+      "api_working_set_bytes": 70344704,
+      "api_private_bytes": 60686336,
+      "postgres_observed_cpu_seconds": 12.84375,
+      "postgres_aggregate_working_set_bytes": 865472512,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.5320146,
+      "api_cpu_seconds": 7.40625,
+      "api_working_set_bytes": 70320128,
+      "api_private_bytes": 60661760,
+      "postgres_observed_cpu_seconds": 12.921875,
+      "postgres_aggregate_working_set_bytes": 865595392,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.65525,
+      "api_cpu_seconds": 7.4375,
+      "api_working_set_bytes": 70320128,
+      "api_private_bytes": 60661760,
+      "postgres_observed_cpu_seconds": 13.015625,
+      "postgres_aggregate_working_set_bytes": 865710080,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.7777016,
+      "api_cpu_seconds": 7.5,
+      "api_working_set_bytes": 70320128,
+      "api_private_bytes": 60661760,
+      "postgres_observed_cpu_seconds": 13.09375,
+      "postgres_aggregate_working_set_bytes": 865828864,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 14.9011303,
+      "api_cpu_seconds": 7.5625,
+      "api_working_set_bytes": 70320128,
+      "api_private_bytes": 60661760,
+      "postgres_observed_cpu_seconds": 13.15625,
+      "postgres_aggregate_working_set_bytes": 865947648,
+      "postgres_aggregate_private_bytes": 220131328,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.0231923,
+      "api_cpu_seconds": 7.625,
+      "api_working_set_bytes": 70369280,
+      "api_private_bytes": 60702720,
+      "postgres_observed_cpu_seconds": 13.1875,
+      "postgres_aggregate_working_set_bytes": 866103296,
+      "postgres_aggregate_private_bytes": 220135424,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.1443348,
+      "api_cpu_seconds": 7.671875,
+      "api_working_set_bytes": 70438912,
+      "api_private_bytes": 60776448,
+      "postgres_observed_cpu_seconds": 13.265625,
+      "postgres_aggregate_working_set_bytes": 866238464,
+      "postgres_aggregate_private_bytes": 220135424,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.2672724,
+      "api_cpu_seconds": 7.6875,
+      "api_working_set_bytes": 71196672,
+      "api_private_bytes": 61530112,
+      "postgres_observed_cpu_seconds": 13.375,
+      "postgres_aggregate_working_set_bytes": 868188160,
+      "postgres_aggregate_private_bytes": 220340224,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.3926024,
+      "api_cpu_seconds": 8.15625,
+      "api_working_set_bytes": 73179136,
+      "api_private_bytes": 63602688,
+      "postgres_observed_cpu_seconds": 13.90625,
+      "postgres_aggregate_working_set_bytes": 872710144,
+      "postgres_aggregate_private_bytes": 220618752,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.5150159,
+      "api_cpu_seconds": 8.421875,
+      "api_working_set_bytes": 71798784,
+      "api_private_bytes": 62160896,
+      "postgres_observed_cpu_seconds": 14.515625,
+      "postgres_aggregate_working_set_bytes": 876843008,
+      "postgres_aggregate_private_bytes": 220684288,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.6364578,
+      "api_cpu_seconds": 8.828125,
+      "api_working_set_bytes": 71589888,
+      "api_private_bytes": 61947904,
+      "postgres_observed_cpu_seconds": 15.09375,
+      "postgres_aggregate_working_set_bytes": 880545792,
+      "postgres_aggregate_private_bytes": 220684288,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.7581927,
+      "api_cpu_seconds": 9.109375,
+      "api_working_set_bytes": 70901760,
+      "api_private_bytes": 61218816,
+      "postgres_observed_cpu_seconds": 15.796875,
+      "postgres_aggregate_working_set_bytes": 884379648,
+      "postgres_aggregate_private_bytes": 221523968,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 15.8815613,
+      "api_cpu_seconds": 9.515625,
+      "api_working_set_bytes": 70885376,
+      "api_private_bytes": 61218816,
+      "postgres_observed_cpu_seconds": 16.390625,
+      "postgres_aggregate_working_set_bytes": 888123392,
+      "postgres_aggregate_private_bytes": 221523968,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 16.0042599,
+      "api_cpu_seconds": 9.65625,
+      "api_working_set_bytes": 71680000,
+      "api_private_bytes": 62005248,
+      "postgres_observed_cpu_seconds": 16.609375,
+      "postgres_aggregate_working_set_bytes": 890544128,
+      "postgres_aggregate_private_bytes": 221536256,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 16.1278778,
+      "api_cpu_seconds": 9.65625,
+      "api_working_set_bytes": 71680000,
+      "api_private_bytes": 62005248,
+      "postgres_observed_cpu_seconds": 16.734375,
+      "postgres_aggregate_working_set_bytes": 891068416,
+      "postgres_aggregate_private_bytes": 221536256,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 16.2545547,
+      "api_cpu_seconds": 9.953125,
+      "api_working_set_bytes": 73981952,
+      "api_private_bytes": 64393216,
+      "postgres_observed_cpu_seconds": 17.21875,
+      "postgres_aggregate_working_set_bytes": 896868352,
+      "postgres_aggregate_private_bytes": 221536256,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 16.3945828,
+      "api_cpu_seconds": 10.625,
+      "api_working_set_bytes": 72470528,
+      "api_private_bytes": 62844928,
+      "postgres_observed_cpu_seconds": 18.46875,
+      "postgres_aggregate_working_set_bytes": 905621504,
+      "postgres_aggregate_private_bytes": 221536256,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 16.5315559,
+      "api_cpu_seconds": 11.296875,
+      "api_working_set_bytes": 73039872,
+      "api_private_bytes": 63418368,
+      "postgres_observed_cpu_seconds": 19.625,
+      "postgres_aggregate_working_set_bytes": 912195584,
+      "postgres_aggregate_private_bytes": 221536256,
+      "postgres_processes": 40
+    },
+    {
+      "elapsed_seconds": 16.6536674,
+      "api_cpu_seconds": 11.71875,
+      "api_working_set_bytes": 74219520,
+      "api_private_bytes": 64823296,
+      "postgres_observed_cpu_seconds": 20.671875,
+      "postgres_aggregate_working_set_bytes": 917438464,
+      "postgres_aggregate_private_bytes": 221536256,
+      "postgres_processes": 40
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+ordered account locks
+LockRows  (cost=15.05..15.07 rows=2 width=45) (actual time=0.395..0.402 rows=2 loops=1)
+  Buffers: shared hit=10 dirtied=1
+  ->  Sort  (cost=15.05..15.05 rows=2 width=45) (actual time=0.060..0.062 rows=2 loops=1)
+        Sort Key: id
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=6
+        ->  Bitmap Heap Scan on accounts  (cost=8.30..15.04 rows=2 width=45) (actual time=0.027..0.029 rows=2 loops=1)
+              Recheck Cond: ((id = '40846fd8-b011-47e8-b6be-083bc744375c'::uuid) OR (id = '00000000-0000-0000-0000-000000000001'::uuid))
+              Heap Blocks: exact=1
+              Buffers: shared hit=3
+              ->  BitmapOr  (cost=8.30..8.30 rows=2 width=0) (actual time=0.013..0.013 rows=0 loops=1)
+                    Buffers: shared hit=2
+                    ->  Bitmap Index Scan on accounts_pkey  (cost=0.00..4.15 rows=1 width=0) (actual time=0.008..0.008 rows=1 loops=1)
+                          Index Cond: (id = '40846fd8-b011-47e8-b6be-083bc744375c'::uuid)
+                          Buffers: shared hit=1
+                    ->  Bitmap Index Scan on accounts_pkey  (cost=0.00..4.15 rows=1 width=0) (actual time=0.001..0.001 rows=1 loops=1)
+                          Index Cond: (id = '00000000-0000-0000-0000-000000000001'::uuid)
+                          Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=17
+Planning Time: 0.160 ms
+Execution Time: 0.507 ms
+history keyset
+Limit  (cost=0.29..29.43 rows=51 width=32) (actual time=0.043..0.069 rows=51 loops=1)
+  Buffers: shared hit=4
+  ->  Index Scan Backward using postings_account_id_account_sequence_key on postings  (cost=0.29..586.11 rows=1025 width=32) (actual time=0.042..0.062 rows=51 loops=1)
+        Index Cond: ((account_id = '40846fd8-b011-47e8-b6be-083bc744375c'::uuid) AND (account_sequence <= '9223372036854775807'::bigint))
+        Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=95
+Planning Time: 3.710 ms
+Execution Time: 0.094 ms
+journal reconciliation
+HashAggregate  (cost=355.12..356.23 rows=89 width=48) (actual time=6.093..6.120 rows=89 loops=1)
+  Group Key: account_id
+  Batches: 1  Memory Usage: 48kB
+  Buffers: shared hit=137
+  ->  Seq Scan on postings  (cost=0.00..261.64 rows=12464 width=24) (actual time=0.020..1.460 rows=12464 loops=1)
+        Buffers: shared hit=137
+Planning:
+  Buffers: shared hit=9
+Planning Time: 0.145 ms
+Execution Time: 6.172 ms

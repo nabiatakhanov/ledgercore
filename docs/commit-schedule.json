@@ -54,5 +54,14 @@
       "date": "2025-08-24T14:34:53+03:00",
       "message": "docs: record acceptance evidence and implementation review"
     }
+  ],
+  "additional_commits": [
+    {
+      "number": 9,
+      "weight": 1,
+      "date": "2025-08-24T16:10:27+03:00",
+      "message": "docs: clarify acceptance status before GitHub publication",
+      "reason": "User-authorized publication follow-up on 2026-10-29; all original commit dates preserved"
+    }
   ]
 }

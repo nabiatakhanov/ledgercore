@@ -7,6 +7,10 @@ if ! [ "$requests" -ge 32 ] || ! [ "$requests" -le 100000 ] || ! [ "$repeats" -g
     echo 'Requests must be 32..100000 and Repeats must be 2..10' >&2
     exit 1
 fi
+if [ "$((requests * repeats * 3))" -gt 100000 ]; then
+    echo 'Total raw samples must be at most 100000; reduce requests or repeats' >&2
+    exit 1
+fi
 run_id=$(python3 -c 'import uuid; print(uuid.uuid4())')
 run_dir="$(pwd)/.runtime/events-bench/$run_id"
 helper=scripts/events-report.py

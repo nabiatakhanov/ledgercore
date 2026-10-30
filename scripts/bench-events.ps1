@@ -7,6 +7,7 @@ try {
     Initialize-Experiment 'bench'
     try {
         if($Requests -lt 32 -or $Requests -gt 100000 -or $Repeats -lt 2 -or $Repeats -gt 10){throw 'Requests must be 32..100000 and Repeats must be 2..10'}
+        if([long]$Requests*$Repeats*3 -gt 100000){throw 'Total raw samples must be at most 100000; reduce Requests or Repeats'}
         $env:RATE_LIMIT='1000000';$env:RATE_WINDOW='1m'
         Read-ExperimentConfig
         [void](Invoke-Docker 'up' @('compose','up','--build','-d','--wait','--wait-timeout','180') 900)

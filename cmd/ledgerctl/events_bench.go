@@ -43,19 +43,35 @@ func latencyDistribution(values []float64) distribution {
 }
 
 type eventMeasurement struct {
-	Clients              int          `json:"clients"`
-	Repeat               int          `json:"repeat"`
-	Requests             int          `json:"requests"`
-	Success              int          `json:"success"`
-	BusinessRefusals     int          `json:"business_refusals"`
-	RateLimited          int          `json:"rate_limited"`
-	InfrastructureErrors int          `json:"infrastructure_errors"`
-	Seconds              float64      `json:"seconds"`
-	Throughput           float64      `json:"requests_per_second"`
-	HTTP                 distribution `json:"http_latency"`
-	CommitToProjection   distribution `json:"commit_to_projection"`
-	CatchUpSeconds       float64      `json:"post_requests_catch_up_seconds"`
-	Audited              bool         `json:"audited"`
+	Clients              int            `json:"clients"`
+	Repeat               int            `json:"repeat"`
+	Requests             int            `json:"requests"`
+	Success              int            `json:"success"`
+	BusinessRefusals     int            `json:"business_refusals"`
+	RateLimited          int            `json:"rate_limited"`
+	InfrastructureErrors int            `json:"infrastructure_errors"`
+	Seconds              float64        `json:"seconds"`
+	Throughput           float64        `json:"requests_per_second"`
+	HTTP                 distribution   `json:"http_latency"`
+	CommitToProjection   distribution   `json:"commit_to_projection"`
+	CatchUpSeconds       float64        `json:"post_requests_catch_up_seconds"`
+	Audited              bool           `json:"audited"`
+	HTTPSamples          []httpSample   `json:"http_samples"`
+	ProjectionSamples    []commitSample `json:"commit_to_projection_samples"`
+}
+
+type httpSample struct {
+	Index         int     `json:"index"`
+	Status        int     `json:"status"`
+	TransactionID string  `json:"transaction_id,omitempty"`
+	LatencyMS     float64 `json:"latency_ms"`
+}
+
+type commitSample struct {
+	EventID               string    `json:"event_id"`
+	SourceCommittedAt     time.Time `json:"source_committed_at"`
+	ProjectionCommittedAt time.Time `json:"projection_committed_at"`
+	LatencyMS             float64   `json:"latency_ms"`
 }
 
 func eventsBench(ctx context.Context, args []string) error {
@@ -67,6 +83,11 @@ func eventsBench(ctx context.Context, args []string) error {
 	}
 	if *n < 32 || *n > 100000 || *repeats < 2 || *repeats > 10 {
 		return errors.New("n must be32..100000 and repeats2..10")
+	}
+	// Retaining raw evidence must remain bounded under the tools container's
+	// memory limit, including all repetitions accumulated in the final report.
+	if *n**repeats*3 > 100000 {
+		return errors.New("total raw samples must be at most100000; reduce n or repeats")
 	}
 	l, err := open(ctx, "DATABASE_URL")
 	if err != nil {
@@ -148,6 +169,10 @@ func eventsBench(ctx context.Context, args []string) error {
 			wg.Wait()
 			m.Seconds = time.Since(started).Seconds()
 			m.Throughput = float64(*n) / m.Seconds
+			m.HTTPSamples = make([]httpSample, *n)
+			for i := range *n {
+				m.HTTPSamples[i] = httpSample{Index: i, Status: statuses[i], TransactionID: ids[i], LatencyMS: delays[i]}
+			}
 			m.HTTP = latencyDistribution(delays)
 			successful := []string{}
 			for i, status := range statuses {
@@ -168,7 +193,7 @@ func eventsBench(ctx context.Context, args []string) error {
 				return err
 			}
 			m.CatchUpSeconds = time.Since(catchUp).Seconds()
-			m.CommitToProjection, err = commitVisibility(ctx, l, a, successful)
+			m.CommitToProjection, m.ProjectionSamples, err = commitVisibility(ctx, l, a, successful)
 			if err != nil {
 				return err
 			}
@@ -193,61 +218,63 @@ func eventsBench(ctx context.Context, args []string) error {
 	return nil
 }
 
-func commitVisibility(ctx context.Context, l, a *pgxpool.Pool, ids []string) (distribution, error) {
+func commitVisibility(ctx context.Context, l, a *pgxpool.Pool, ids []string) (distribution, []commitSample, error) {
 	commits := map[string]time.Time{}
 	rows, err := l.Query(ctx, `SELECT id::text,pg_xact_commit_timestamp(creation_xid::text::xid) FROM journal_transactions WHERE id::text=ANY($1::text[])`, ids)
 	if err != nil {
-		return distribution{}, err
+		return distribution{}, nil, err
 	}
 	for rows.Next() {
 		var id string
 		var at *time.Time
 		if err = rows.Scan(&id, &at); err != nil {
 			rows.Close()
-			return distribution{}, err
+			return distribution{}, nil, err
 		}
 		if at == nil {
 			rows.Close()
-			return distribution{}, errors.New("commit timestamp unavailable; enable track_commit_timestamp for experiment")
+			return distribution{}, nil, errors.New("commit timestamp unavailable; enable track_commit_timestamp for experiment")
 		}
 		commits[id] = *at
 	}
 	err = rows.Err()
 	rows.Close()
 	if err != nil {
-		return distribution{}, err
+		return distribution{}, nil, err
 	}
 	rows, err = a.Query(ctx, `SELECT event_id::text,pg_xact_commit_timestamp(xmin) FROM activity_inbox WHERE event_id::text=ANY($1::text[])`, ids)
 	if err != nil {
-		return distribution{}, err
+		return distribution{}, nil, err
 	}
 	values := []float64{}
+	samples := []commitSample{}
 	for rows.Next() {
 		var id string
 		var at *time.Time
 		if err = rows.Scan(&id, &at); err != nil {
 			rows.Close()
-			return distribution{}, err
+			return distribution{}, nil, err
 		}
 		source, ok := commits[id]
 		if at == nil || !ok {
 			rows.Close()
-			return distribution{}, errors.New("missing source/projection commit timestamp")
+			return distribution{}, nil, errors.New("missing source/projection commit timestamp")
 		}
 		delay := float64(at.Sub(source)) / float64(time.Millisecond)
 		if delay < 0 {
 			rows.Close()
-			return distribution{}, errors.New("negative commit lag: clocks differ")
+			return distribution{}, nil, errors.New("negative commit lag: clocks differ")
 		}
 		values = append(values, delay)
+		samples = append(samples, commitSample{EventID: id, SourceCommittedAt: source.UTC(), ProjectionCommittedAt: at.UTC(), LatencyMS: delay})
 	}
 	err = rows.Err()
 	rows.Close()
 	if err != nil {
-		return distribution{}, err
+		return distribution{}, nil, err
 	}
 	if len(values) != len(ids) {
-		return distribution{}, errors.New("missing visibility samples")
+		return distribution{}, nil, errors.New("missing visibility samples")
 	}
-	return latencyDistribution(values), nil
+	return latencyDistribution(values), samples, nil
 }

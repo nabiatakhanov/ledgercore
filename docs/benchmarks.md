@@ -51,6 +51,13 @@ not silently replaced with event `occurred_at` or precommit `projected_at` value
 Each sample count and p50/p95/p99/max is retained. Commit-timestamp history is a
 local measurement aid, not a permanent business timestamp guarantee.
 
+The JSON also retains every request's latency, classified status and successful
+operation ID, plus each event's source/projection commit timestamps and delay.
+Statistics can be recalculated from those samples. Total samples across all
+cases are limited to100,000 to bound CLI memory; reduce requests/repeats for
+larger parameter combinations. A status0 sample denotes a transport/invalid
+response classified as an infrastructure error, not an HTTP status code.
+
 After each case, source financial and independent projection audits must pass.
 The demo separately records backlog during Kafka/Activity outages, catch-up wait,
 replay before/after counts, shared limiter outcomes and SIGTERM exit codes.

@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"ledgercore/internal/events"
 	"ledgercore/internal/ledger"
 )
 
@@ -282,6 +283,19 @@ func (s *Store) write(ctx context.Context, tx pgx.Tx, kind, original string, req
 	t := ledger.Transaction{ID: id, Kind: kind, TransferRequest: req, CreatedAt: created, Postings: []ledger.Posting{{TransactionID: id, AccountID: from.id, DeltaMinor: -int64(n), Sequence: from.seq + 1, CreatedAt: created}, {TransactionID: id, AccountID: to.id, DeltaMinor: int64(n), Sequence: to.seq + 1, CreatedAt: created}}}
 	if original != "" {
 		t.ReversalOf = &original
+	}
+	if kind == "transfer" || kind == "reversal" {
+		event, err := events.FromTransaction(t)
+		if err != nil {
+			return ledger.Outcome{}, err
+		}
+		payload, err := json.Marshal(event)
+		if err != nil {
+			return ledger.Outcome{}, err
+		}
+		if _, err = tx.Exec(ctx, `INSERT INTO outbox_events(event_id,journal_transaction_id,event_type,schema_version,occurred_at,payload) VALUES($1,$2,$3,$4,$5,$6)`, event.EventID, event.JournalTransactionID, event.Type, event.SchemaVersion, event.OccurredAt, payload); err != nil {
+			return ledger.Outcome{}, err
+		}
 	}
 	return ledger.Outcome{Status: 201, Transaction: &t}, nil
 }

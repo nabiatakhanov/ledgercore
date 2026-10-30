@@ -1,0 +1,35 @@
+syntax = "proto3";
+package activity.v1;
+option go_package = "ledgercore/gen/activity/v1;activityv1";
+import "google/protobuf/timestamp.proto";
+
+// A reconstructible, eventually-consistent read model; never an available balance.
+service ActivityService {
+  rpc GetAccountActivity(GetAccountActivityRequest) returns (GetAccountActivityResponse);
+}
+message GetAccountActivityRequest { string account_id = 1; string cursor = 2; int32 limit = 3; }
+message GetAccountActivityResponse {
+  repeated Entry entries = 1;
+  Summary summary = 2;
+  string next_cursor = 3;
+}
+message Entry {
+  string event_id = 1;
+  string journal_transaction_id = 2;
+  string type = 3;
+  string direction = 4;
+  int64 amount_minor = 5; // Positive integral RUB kopecks.
+  string currency = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  google.protobuf.Timestamp projected_at = 8;
+  string reversal_of = 9;
+  int64 sequence = 10;
+}
+message Summary {
+  string account_id = 1;
+  // Unbounded cumulative PostgreSQL NUMERIC totals/counts, decimal strings.
+  string incoming_minor = 2;
+  string outgoing_minor = 3;
+  string incoming_count = 4;
+  string outgoing_count = 5;
+}

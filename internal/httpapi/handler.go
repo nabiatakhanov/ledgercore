@@ -39,6 +39,13 @@ type handler struct {
 
 type requestIDKey struct{}
 
+// RequestID lets transport adapters propagate the server-generated correlation
+// identifier across a gRPC boundary without exposing the private context key.
+func RequestID(ctx context.Context) string {
+	id, _ := ctx.Value(requestIDKey{}).(string)
+	return id
+}
+
 // New requires a configured nonempty bearer token. Production validates its
 // length before starting listeners. Readiness must check the application's DB.
 func New(service Service, token string, ready func(context.Context) error, log *slog.Logger) http.Handler {

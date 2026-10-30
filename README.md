@@ -1,5 +1,7 @@
 # LedgerCore
 
+[![verify](https://github.com/nabiatakhanov/ledgercore/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nabiatakhanov/ledgercore/actions/workflows/ci.yml)
+
 Учебный Go-сервис внутренних переводов в RUB с событийной историей. Это развитие одного LedgerCore: исходная двойная запись, неизменяемый журнал, идемпотентность, полная отмена и независимая сверка дополнены gRPC, Kafka и Redis. Используются тестовые средства.
 
 | Компонент | Назначение |

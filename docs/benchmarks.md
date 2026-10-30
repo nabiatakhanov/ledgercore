@@ -215,5 +215,7 @@ preexisting-plus-benchmark datasets, not an initially empty database.
 [Before](events/evidence/dataset-before.json), [after](events/evidence/dataset-after.json).
 
 [Evidence index](events/evidence/README.md) includes immutable raw copies, resource
-point samples, final test output and hashes. No hosted CI or production deployment
-was run for the extension; there was no automatic push.
+point samples, final test output and hashes. Hosted CI and production deployment
+had not run at the local measurement snapshot, and there was no automatic push.
+Later user-authorized publication is tracked by
+[GitHub Actions](https://github.com/nabiatakhanov/ledgercore/actions/workflows/ci.yml).

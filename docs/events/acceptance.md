@@ -4,7 +4,11 @@ Implementation date:2026-10-30 (Europe/Moscow). Repository is the existing
 LedgerCore, branch `feature/events-grpc-kafka-redis`. Original base:
 `4a4ebd17158341f4740c31377a6d15951bc8e46f`. The initial working tree was clean;
 original history and financial logic are preserved. New commits use actual dates
-and configured Git authorship. This extension has not been pushed.
+and configured Git authorship. This local acceptance snapshot was completed at
+`c16b1efd79f75b3380e5736c9c67e6269eaa3181` before publication. The user subsequently
+explicitly requested the GitHub update. Current hosted verification is available
+in [GitHub Actions](https://github.com/nabiatakhanov/ledgercore/actions/workflows/ci.yml);
+the raw evidence below remains the original local measurements.
 
 ## Implemented
 
@@ -138,9 +142,12 @@ On Windows without Make, use Docker Compose and the PowerShell scripts shown in
 Redis keys or re-fund its original wallets. Full scripts record their own run IDs,
 source revision/dirty status, content hash, timings and raw output.
 
-NOT RUN: hosted GitHub Actions for the extension (no push requested), long-duration
-soak/capacity tests, multi-broker failover/node or disk loss, external TLS/mTLS and
-production deployment. The one-broker local topology cannot establish those claims.
+Hosted GitHub Actions had not run when the local evidence was collected; later
+publication runs are tracked separately in the Actions link above.
+
+NOT RUN: long-duration soak/capacity tests, multi-broker failover/node or disk loss,
+external TLS/mTLS and production deployment. The one-broker local topology cannot
+establish those claims.
 
 ## Limits and interview material
 
@@ -174,8 +181,9 @@ The following implementation commits use configured author GyBJluHv2 and actual
 | `9d28adc0050d2107824177ef8e464b0ce41ab7d3` | feat: fence outbox publishers and verify recovery across real service failures |
 | `0400fcff1ed0a5fd56409572660b47cd9c3f5679` | feat: ship reproducible events stack, fault demo and measured-path tooling |
 | `05ecfef624e3ae36d200efd402fac5fa1dd78875` | feat: retain bounded raw HTTP and projection commit samples |
+| `c16b1efd79f75b3380e5736c9c67e6269eaa3181` | docs: record verified event failures, raw samples and benchmark limits |
 
-The final documentation/evidence commit follows these implementation commits.
-Its full SHA is obtained with `git log -1 --format='%H %s'`; it changes no runtime
-code. Final working-tree status is checked clean after that commit. No push was
-performed. Hosted extension CI remains NOT RUN for that reason.
+The documentation/evidence commit changes no runtime code. The working tree was
+checked clean at completion of that local acceptance, and no automatic push was
+performed then. Later publication was explicitly authorized by the user; the
+current repository revision is obtained with `git log -1 --format='%H %s'`.

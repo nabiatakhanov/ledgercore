@@ -43,3 +43,18 @@ Unpublished events are retained through outages. Backoff is bounded, while the
 durable backlog can grow until storage capacity is exhausted. Monitor count,
 oldest age and disk space. A PostgreSQL storage failure rejects/rolls back the
 entire financial transaction; the API does not acknowledge a failed commit.
+
+The administrative event audit reconstructs each expected event from the
+authoritative journal header, compares the immutable outbox envelope and the
+Activity inbox, and independently checks Activity entries and NUMERIC summaries.
+Migration003 also records a full transaction-ID watermark for detecting missing
+outbox events among subsequent writer transactions without relying on wall-clock
+ordering. Existing v002 outbox events are included; pre-stream journal operations
+remain outside the projection instead of being silently backfilled. Cross-DB
+completeness checks require quiescent writers; no distributed snapshot is claimed.
+
+Producer results are correlated by record identity, not callback completion
+order: partial multi-partition failure cannot mark another event as published.
+Network-client close, HTTP draining and SQL-pool close share the same absolute
+shutdown budget; stopping during an unknown acknowledgment leaves a renewable
+lease and a safely replayable stable event.

@@ -1,0 +1,5 @@
+ Volume "ledgercore-events_test-build-cache"  Creating
+ Volume "ledgercore-events_test-build-cache"  Created
+ Container ledgercore-events-db-1  Running
+ Container ledgercore-events-kafka-1  Running
+ Container ledgercore-events-redis-1  Running

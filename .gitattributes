@@ -1,1 +1,8 @@
 * text=auto eol=lf
+
+# Preserve original measurement/log bytes so published SHA256SUMS also verify
+# after a fresh checkout on either Windows or Linux.
+docs/events/evidence/*.json -text
+docs/events/evidence/*.log -text
+docs/events/evidence/SHA256SUMS -text
+docs/events/evidence/* whitespace=cr-at-eol

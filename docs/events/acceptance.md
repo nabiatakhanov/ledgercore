@@ -36,19 +36,19 @@ integration test skip is not counted as a real infrastructure test.
 
 | Check | Result / scope |
 |---|---|
-| Original baseline unit/race and vet | PASS before extension; original14 financial PostgreSQL scenarios PASS (24.314s) |
-| Original financial suite plus atomic outbox constraints | PASS with real PostgreSQL roles, race detector (22.195s) |
+| Original baseline unit/race and vet | PASS before extension; original14 financial PostgreSQL scenarios PASS (24.314 s) |
+| Original financial suite plus atomic outbox constraints | PASS with real PostgreSQL roles, race detector (22.195 s) |
 | Real TCP gRPC | PASS: auth, deadlines/cancellation, message bounds, ErrorInfo, int64 string preservation, request IDs, committed lost-reply replay, unkeyed create not retried |
-| Real Redis admission | PASS: atomic common quota, two clients/Gateways, first-only TTL, expiry,429 versus outage503 |
-| Activity PostgreSQL | PASS: duplicate races, arbitrary-precision totals, conflicting event IDs, privileges, late reversal/order, stable cursor, independent snapshot/corruption checks (race6.749s) |
+| Real Redis admission | PASS: atomic common quota, two clients/Gateways, first-only TTL, expiry, 429 versus outage503 |
+| Activity PostgreSQL | PASS: duplicate races, arbitrary-precision totals, conflicting event IDs, privileges, late reversal/order, stable cursor, independent snapshot/corruption checks (race6.749 s) |
 | Real Kafka consumer | PASS: two-member rebalance, replay, DLQ, transient SQL failure with no offset skip, failed DLQ with no source commit, subprocess death after SQL commit before offset |
 | Publisher/complete path | PASS: two publishers, stale-owner fencing, lease recovery, Kafka-ack-before-outbox-mark killed subprocess, projection dedup, source/outbox drift detection |
 | Actual host container faults | PASS with real Kafka and Redis stop/start through two Gateways; separate isolated test DBs/topics, financial and projection audits |
-| Linux Compose full integration | PASS: `go test -p 1 -race -count=1 ./...` with PostgreSQL/Kafka/Redis and real gRPC; Activity25.167s, financial10.633s, events10.490s in the first full run |
-| Build, vet, Staticcheck0.7.0 | PASS locally; multi-stage Linux image builds and full primary stack becomes healthy |
-| Pinned Protobuf regeneration | PASS on Windows: four generated files byte-identical |
-| OpenAPI | PASS YAML/duplicate keys,9 operations,81 local references, path parameters/responses; full meta-schema validator NOT RUN |
-| Event JSON Schema | PASS draft2020-12 meta-schema check,3 valid and11 invalid examples; application semantic validation is tested separately |
+| Linux Compose full integration | PASS: `go test -p 1 -race -count=1 ./...` with PostgreSQL/Kafka/Redis and real gRPC; Activity 25.167 s, financial10.633 s, events 10.490 s in the first full run |
+| Build, vet, Staticcheck 0.7.0 | PASS locally; multi-stage Linux image builds and full primary stack becomes healthy |
+| Pinned Protobuf regeneration | PASS on Windows and with pinned Linux binaries in an ephemeral container: four generated files byte-identical |
+| OpenAPI | PASS YAML/duplicate keys, 9 operations, 81 local references, path parameters/responses; full meta-schema validator NOT RUN |
+| Event JSON Schema | PASS draft2020-12 meta-schema check, 3 valid and 11 invalid examples; application semantic validation is tested separately |
 
 Test cases live in `tests/integration_test.go`, `tests/outbox_atomic_test.go`,
 `tests/events/events_test.go`, `internal/activity/*_test.go`, `internal/rpc/*_test.go`,
@@ -75,7 +75,49 @@ fencing, offset commits, partition sequencing, internal authentication, retries 
 shutdown. Sandbox RPC tests initially hit Windows loopback socket restrictions;
 the successful checks used actual unrestricted TCP or Linux Compose.
 
-## Reproduction and outstanding result collection
+## Final acceptance and measurements
+
+The final full Linux check on clean source
+`05ecfef624e3ae36d200efd402fac5fa1dd78875` passed with exit 0:
+`docker compose --profile test run --build --rm integration`. It runs
+`go test -p 1 -race -count=1 ./...` against real PostgreSQL, Kafka, Redis and gRPC.
+Latest package times: Activity 20.381 s, financial tests 11.403 s, events 9.808 s,
+RPC 1.149 s. Native `go vet ./...` and Staticcheck 0.7.0 also passed on that source.
+[Raw test output](evidence/integration.log),
+[execution receipt](evidence/checks-receipt.json),
+[Linux generation output](evidence/proto-linux.log).
+
+Two full fault demonstrations passed on clean `0400fcf` in 219.785 s/210.828 s,
+with identical source-content hashes, stable normal transfer/reversal IDs and
+exactly 2 demo funding keys. Both restored services healthy. The later `05ecfef`
+commit only adds bounded raw measurement capture to the CLI/scripts; financial
+services, RPC, outbox and consumer code are unchanged from those demonstrations.
+Each demo retained 20 unpublished events during Kafka outage and 20 unprojected
+events during Activity outage, then converged and passed both audits. Replay
+left 65/130 and 106/212 event/entry counts unchanged. Both shared limiter bursts
+returned 60 successes/20 HTTP 429 from 80 requests; Redis outage returned 503 with
+no SQL reservation. All SIGTERM checks exited 0, including publisher during outage.
+
+Official benchmark: 256 requests × 3 repeats × 3 client counts = **2304 successful
+transfers**, 0 business refusals, 0 limiter responses, 0 infrastructure errors.
+The 3-repeat throughput median and pooled 768-sample p95 latency per client count:
+
+| Clients | Median req/s | HTTP p95, ms | Commit→projection p95, ms |
+|---:|---:|---:|---:|
+| 1 | 81.88 | 15.256 | 43.868 |
+| 8 | 290.53 | 63.636 | 1469.698 |
+| 32 | 326.23 | 173.335 | 1315.712 |
+
+All 4608 raw HTTP/commit samples and their quantiles were independently checked;
+all 2304 operation IDs are unique. Final source/inbox counts 2410/2410, Activity
+entries 4820, unpublished/pending 0; both audits pass. The dataset includes 246 new
+fixture funding transactions outside the timed requests. A short local burst is
+not an SLA, and no speed improvement over the old HTTP-only path is claimed.
+
+[Full conditions, p50/p95/p99, all 9 cases, recovery times and dataset counts](../benchmarks.md).
+[Raw evidence index and SHA256 hashes](evidence/README.md).
+
+## Reproduction
 
 ```sh
 make up
@@ -92,9 +134,9 @@ make down
 
 On Windows without Make, use Docker Compose and the PowerShell scripts shown in
 [demo](../demo.md), [benchmarks](../benchmarks.md) and [runbook](../runbook.md).
-`make down` keeps data. Full-demo fault evidence and official finite benchmark
-measurements are being collected against the final committed source and will be
-recorded here with raw artifacts. No provisional data is a throughput claim.
+`make down` keeps data. The default demo is repeatable and does not reset shared
+Redis keys or re-fund its original wallets. Full scripts record their own run IDs,
+source revision/dirty status, content hash, timings and raw output.
 
 NOT RUN: hosted GitHub Actions for the extension (no push requested), long-duration
 soak/capacity tests, multi-broker failover/node or disk loss, external TLS/mTLS and
@@ -115,3 +157,25 @@ writers because two databases do not share a transaction snapshot.
 update the existing LedgerCore project. Historical benchmark evidence remains
 [separate](../benchmarks-ledger-v1.md). No speed-improvement percentage or distributed
 exactly-once guarantee is claimed.
+
+## Actual commit history
+
+Base `4a4ebd17158341f4740c31377a6d15951bc8e46f` remains an ancestor. All 9 original
+historical commits passed `scripts/verify-history.ps1`; none were rewritten.
+The following implementation commits use configured author GyBJluHv2 and actual
+2026-10-30 dates with matching author/committer timestamps (+03:00):
+
+| SHA | Message |
+|---|---|
+| `8ede65f8355c27f09e864177699c243772fb1309` | docs: audit ledger baseline and define event extension boundaries |
+| `3ac9a986c33b19b487d793271c7a29c26d0fa5fa` | feat: commit immutable operation events atomically with ledger writes |
+| `887a3d0ee5c74d20e58d0dc3a3955d7b2c470d95` | feat: materialize Kafka activity with transactional inbox and safe replay |
+| `c2fb9aa74886eb308cc02931ab426e567b9a95ba` | feat: route authenticated gateways through gRPC and shared Redis admission |
+| `9d28adc0050d2107824177ef8e464b0ce41ab7d3` | feat: fence outbox publishers and verify recovery across real service failures |
+| `0400fcff1ed0a5fd56409572660b47cd9c3f5679` | feat: ship reproducible events stack, fault demo and measured-path tooling |
+| `05ecfef624e3ae36d200efd402fac5fa1dd78875` | feat: retain bounded raw HTTP and projection commit samples |
+
+The final documentation/evidence commit follows these implementation commits.
+Its full SHA is obtained with `git log -1 --format='%H %s'`; it changes no runtime
+code. Final working-tree status is checked clean after that commit. No push was
+performed. Hosted extension CI remains NOT RUN for that reason.

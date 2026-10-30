@@ -1,0 +1,928 @@
+{
+    "mode":  "demo",
+    "run_id":  "3e49a6f8-a35b-4d37-a411-130efaf940a2",
+    "started_at":  "2026-10-30T15:02:59.6251030+00:00",
+    "source_commit":  "0400fcff1ed0a5fd56409572660b47cd9c3f5679",
+    "source_dirty":  false,
+    "source_content_sha256":  "856edec77f71bf0352653da669dd1a8ab465f976fe13c6194f4df26e1784a934",
+    "status":  "passed",
+    "steps":  [
+                  {
+                      "name":  "config-private",
+                      "started_at":  "2026-10-30T15:02:59.7961841+00:00",
+                      "finished_at":  "2026-10-30T15:03:00.3670090+00:00",
+                      "seconds":  0.56104959999999993,
+                      "exit_code":  0,
+                      "timed_out":  false
+                  },
+                  {
+                      "name":  "docker-hardware",
+                      "started_at":  "2026-10-30T15:03:00.4842183+00:00",
+                      "finished_at":  "2026-10-30T15:03:01.4712495+00:00",
+                      "seconds":  0.97942509999999994,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\02-docker-hardware.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\02-docker-hardware.stderr.log"
+                  },
+                  {
+                      "name":  "up",
+                      "started_at":  "2026-10-30T15:03:01.5058007+00:00",
+                      "finished_at":  "2026-10-30T15:03:34.8942552+00:00",
+                      "seconds":  33.3859683,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\03-up.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\03-up.stderr.log"
+                  },
+                  {
+                      "name":  "images",
+                      "started_at":  "2026-10-30T15:03:34.8980430+00:00",
+                      "finished_at":  "2026-10-30T15:03:35.5903524+00:00",
+                      "seconds":  0.691591,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\04-images.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\04-images.stderr.log"
+                  },
+                  {
+                      "name":  "phase-limiter",
+                      "started_at":  "2026-10-30T15:03:35.6111027+00:00",
+                      "finished_at":  "2026-10-30T15:03:37.4999616+00:00",
+                      "seconds":  1.8868437,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\05-phase-limiter.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\05-phase-limiter.stderr.log"
+                  },
+                  {
+                      "name":  "phase-normal",
+                      "started_at":  "2026-10-30T15:03:37.5258956+00:00",
+                      "finished_at":  "2026-10-30T15:03:39.5345203+00:00",
+                      "seconds":  2.0061465,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\06-phase-normal.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\06-phase-normal.stderr.log"
+                  },
+                  {
+                      "name":  "kafka-stop",
+                      "started_at":  "2026-10-30T15:03:39.5597638+00:00",
+                      "finished_at":  "2026-10-30T15:03:41.4849375+00:00",
+                      "seconds":  1.9234755,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\07-kafka-stop.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\07-kafka-stop.stderr.log"
+                  },
+                  {
+                      "name":  "phase-enqueue",
+                      "started_at":  "2026-10-30T15:03:41.4899377+00:00",
+                      "finished_at":  "2026-10-30T15:03:43.3997408+00:00",
+                      "seconds":  1.9084067999999998,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\08-phase-enqueue.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\08-phase-enqueue.stderr.log"
+                  },
+                  {
+                      "name":  "phase-status",
+                      "started_at":  "2026-10-30T15:03:53.4467018+00:00",
+                      "finished_at":  "2026-10-30T15:03:55.4156875+00:00",
+                      "seconds":  1.9656624999999999,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\09-phase-status.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\09-phase-status.stderr.log"
+                  },
+                  {
+                      "name":  "publisher-stop-during-outage",
+                      "started_at":  "2026-10-30T15:03:55.4437302+00:00",
+                      "finished_at":  "2026-10-30T15:03:59.1478801+00:00",
+                      "seconds":  3.7021899,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\10-publisher-stop-during-outage.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\10-publisher-stop-during-outage.stderr.log"
+                  },
+                  {
+                      "name":  "outage-publisher-container",
+                      "started_at":  "2026-10-30T15:03:59.1559191+00:00",
+                      "finished_at":  "2026-10-30T15:03:59.9452232+00:00",
+                      "seconds":  0.7869165,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\11-outage-publisher-container.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\11-outage-publisher-container.stderr.log"
+                  },
+                  {
+                      "name":  "outage-publisher-exit",
+                      "started_at":  "2026-10-30T15:03:59.9549634+00:00",
+                      "finished_at":  "2026-10-30T15:04:00.2737122+00:00",
+                      "seconds":  0.3166903,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\12-outage-publisher-exit.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\12-outage-publisher-exit.stderr.log"
+                  },
+                  {
+                      "name":  "kafka-start",
+                      "started_at":  "2026-10-30T15:04:00.2836507+00:00",
+                      "finished_at":  "2026-10-30T15:04:29.1987559+00:00",
+                      "seconds":  28.912937199999998,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\13-kafka-start.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\13-kafka-start.stderr.log"
+                  },
+                  {
+                      "name":  "publisher-start",
+                      "started_at":  "2026-10-30T15:04:29.2083041+00:00",
+                      "finished_at":  "2026-10-30T15:04:36.3745307+00:00",
+                      "seconds":  7.1645430999999995,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\14-publisher-start.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\14-publisher-start.stderr.log"
+                  },
+                  {
+                      "name":  "activity-recover-after-kafka",
+                      "started_at":  "2026-10-30T15:04:36.3796750+00:00",
+                      "finished_at":  "2026-10-30T15:04:43.4688892+00:00",
+                      "seconds":  7.0879758,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\15-activity-recover-after-kafka.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\15-activity-recover-after-kafka.stderr.log"
+                  },
+                  {
+                      "name":  "phase-verify",
+                      "started_at":  "2026-10-30T15:04:43.4775995+00:00",
+                      "finished_at":  "2026-10-30T15:04:45.5513100+00:00",
+                      "seconds":  2.0722233,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\16-phase-verify.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\16-phase-verify.stderr.log"
+                  },
+                  {
+                      "name":  "activity-stop",
+                      "started_at":  "2026-10-30T15:04:45.6048069+00:00",
+                      "finished_at":  "2026-10-30T15:04:46.5800329+00:00",
+                      "seconds":  0.97302939999999993,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\17-activity-stop.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\17-activity-stop.stderr.log"
+                  },
+                  {
+                      "name":  "phase-enqueue",
+                      "started_at":  "2026-10-30T15:04:46.5891002+00:00",
+                      "finished_at":  "2026-10-30T15:04:48.6627705+00:00",
+                      "seconds":  2.0720817,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\18-phase-enqueue.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\18-phase-enqueue.stderr.log"
+                  },
+                  {
+                      "name":  "phase-status",
+                      "started_at":  "2026-10-30T15:04:58.7031893+00:00",
+                      "finished_at":  "2026-10-30T15:05:00.5253908+00:00",
+                      "seconds":  1.8202517999999999,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\19-phase-status.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\19-phase-status.stderr.log"
+                  },
+                  {
+                      "name":  "activity-start",
+                      "started_at":  "2026-10-30T15:05:00.5509444+00:00",
+                      "finished_at":  "2026-10-30T15:05:07.2998518+00:00",
+                      "seconds":  6.7480442,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\20-activity-start.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\20-activity-start.stderr.log"
+                  },
+                  {
+                      "name":  "phase-verify",
+                      "started_at":  "2026-10-30T15:05:07.3079181+00:00",
+                      "finished_at":  "2026-10-30T15:05:09.2046810+00:00",
+                      "seconds":  1.8936849,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\21-phase-verify.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\21-phase-verify.stderr.log"
+                  },
+                  {
+                      "name":  "phase-replay",
+                      "started_at":  "2026-10-30T15:05:09.2302391+00:00",
+                      "finished_at":  "2026-10-30T15:05:11.6913680+00:00",
+                      "seconds":  2.4588665,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\22-phase-replay.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\22-phase-replay.stderr.log"
+                  },
+                  {
+                      "name":  "phase-limiter",
+                      "started_at":  "2026-10-30T15:05:11.7235277+00:00",
+                      "finished_at":  "2026-10-30T15:05:48.5665013+00:00",
+                      "seconds":  36.8414729,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\23-phase-limiter.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\23-phase-limiter.stderr.log"
+                  },
+                  {
+                      "name":  "redis-stop",
+                      "started_at":  "2026-10-30T15:05:48.5966334+00:00",
+                      "finished_at":  "2026-10-30T15:05:49.7727307+00:00",
+                      "seconds":  1.1737739999999999,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\24-redis-stop.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\24-redis-stop.stderr.log"
+                  },
+                  {
+                      "name":  "phase-redis-outage",
+                      "started_at":  "2026-10-30T15:05:49.7975192+00:00",
+                      "finished_at":  "2026-10-30T15:05:51.9578734+00:00",
+                      "seconds":  2.1587524,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\25-phase-redis-outage.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\25-phase-redis-outage.stderr.log"
+                  },
+                  {
+                      "name":  "redis-start",
+                      "started_at":  "2026-10-30T15:05:51.9908872+00:00",
+                      "finished_at":  "2026-10-30T15:05:56.6408218+00:00",
+                      "seconds":  4.6477954,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\26-redis-start.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\26-redis-start.stderr.log"
+                  },
+                  {
+                      "name":  "sigterm-ledger",
+                      "started_at":  "2026-10-30T15:05:56.6458604+00:00",
+                      "finished_at":  "2026-10-30T15:05:57.5641146+00:00",
+                      "seconds":  0.9174198,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\27-sigterm-ledger.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\27-sigterm-ledger.stderr.log"
+                  },
+                  {
+                      "name":  "container-ledger",
+                      "started_at":  "2026-10-30T15:05:57.5696444+00:00",
+                      "finished_at":  "2026-10-30T15:05:58.1383719+00:00",
+                      "seconds":  0.5667897,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\28-container-ledger.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\28-container-ledger.stderr.log"
+                  },
+                  {
+                      "name":  "exit-ledger",
+                      "started_at":  "2026-10-30T15:05:58.1443730+00:00",
+                      "finished_at":  "2026-10-30T15:05:58.3518862+00:00",
+                      "seconds":  0.20521019999999998,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\29-exit-ledger.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\29-exit-ledger.stderr.log"
+                  },
+                  {
+                      "name":  "sigterm-gateway",
+                      "started_at":  "2026-10-30T15:05:58.3578117+00:00",
+                      "finished_at":  "2026-10-30T15:05:59.4314887+00:00",
+                      "seconds":  1.0725055,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\30-sigterm-gateway.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\30-sigterm-gateway.stderr.log"
+                  },
+                  {
+                      "name":  "container-gateway",
+                      "started_at":  "2026-10-30T15:05:59.4442508+00:00",
+                      "finished_at":  "2026-10-30T15:06:00.1188373+00:00",
+                      "seconds":  0.6732637,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\31-container-gateway.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\31-container-gateway.stderr.log"
+                  },
+                  {
+                      "name":  "exit-gateway",
+                      "started_at":  "2026-10-30T15:06:00.1257346+00:00",
+                      "finished_at":  "2026-10-30T15:06:00.3490452+00:00",
+                      "seconds":  0.221075,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\32-exit-gateway.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\32-exit-gateway.stderr.log"
+                  },
+                  {
+                      "name":  "sigterm-gateway2",
+                      "started_at":  "2026-10-30T15:06:00.3614309+00:00",
+                      "finished_at":  "2026-10-30T15:06:01.5165563+00:00",
+                      "seconds":  1.1545081,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\33-sigterm-gateway2.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\33-sigterm-gateway2.stderr.log"
+                  },
+                  {
+                      "name":  "container-gateway2",
+                      "started_at":  "2026-10-30T15:06:01.5256018+00:00",
+                      "finished_at":  "2026-10-30T15:06:02.1457562+00:00",
+                      "seconds":  0.61951919999999994,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\34-container-gateway2.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\34-container-gateway2.stderr.log"
+                  },
+                  {
+                      "name":  "exit-gateway2",
+                      "started_at":  "2026-10-30T15:06:02.1528322+00:00",
+                      "finished_at":  "2026-10-30T15:06:02.3742481+00:00",
+                      "seconds":  0.21859889999999998,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\35-exit-gateway2.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\35-exit-gateway2.stderr.log"
+                  },
+                  {
+                      "name":  "sigterm-activity",
+                      "started_at":  "2026-10-30T15:06:02.3823950+00:00",
+                      "finished_at":  "2026-10-30T15:06:03.3894098+00:00",
+                      "seconds":  1.0052725,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\36-sigterm-activity.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\36-sigterm-activity.stderr.log"
+                  },
+                  {
+                      "name":  "container-activity",
+                      "started_at":  "2026-10-30T15:06:03.3986989+00:00",
+                      "finished_at":  "2026-10-30T15:06:04.1319816+00:00",
+                      "seconds":  0.7309067,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\37-container-activity.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\37-container-activity.stderr.log"
+                  },
+                  {
+                      "name":  "exit-activity",
+                      "started_at":  "2026-10-30T15:06:04.1410964+00:00",
+                      "finished_at":  "2026-10-30T15:06:04.3689764+00:00",
+                      "seconds":  0.22622599999999998,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\38-exit-activity.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\38-exit-activity.stderr.log"
+                  },
+                  {
+                      "name":  "sigterm-publisher",
+                      "started_at":  "2026-10-30T15:06:04.3767521+00:00",
+                      "finished_at":  "2026-10-30T15:06:05.4009966+00:00",
+                      "seconds":  1.0225471,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\39-sigterm-publisher.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\39-sigterm-publisher.stderr.log"
+                  },
+                  {
+                      "name":  "container-publisher",
+                      "started_at":  "2026-10-30T15:06:05.4070642+00:00",
+                      "finished_at":  "2026-10-30T15:06:05.9923521+00:00",
+                      "seconds":  0.5837793,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\40-container-publisher.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\40-container-publisher.stderr.log"
+                  },
+                  {
+                      "name":  "exit-publisher",
+                      "started_at":  "2026-10-30T15:06:05.9994095+00:00",
+                      "finished_at":  "2026-10-30T15:06:06.2094378+00:00",
+                      "seconds":  0.20792239999999998,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\41-exit-publisher.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\41-exit-publisher.stderr.log"
+                  },
+                  {
+                      "name":  "restore",
+                      "started_at":  "2026-10-30T15:06:06.2144462+00:00",
+                      "finished_at":  "2026-10-30T15:06:27.7035215+00:00",
+                      "seconds":  21.4864486,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\42-restore.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\42-restore.stderr.log"
+                  },
+                  {
+                      "name":  "phase-verify",
+                      "started_at":  "2026-10-30T15:06:27.7110897+00:00",
+                      "finished_at":  "2026-10-30T15:06:29.5523733+00:00",
+                      "seconds":  1.8398653999999999,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\43-phase-verify.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\43-phase-verify.stderr.log"
+                  },
+                  {
+                      "name":  "component-logs",
+                      "started_at":  "2026-10-30T15:06:29.5838116+00:00",
+                      "finished_at":  "2026-10-30T15:06:30.4451422+00:00",
+                      "seconds":  0.8599703,
+                      "exit_code":  0,
+                      "timed_out":  false,
+                      "stdout_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\44-component-logs.stdout.log",
+                      "stderr_file":  "C:\\Users\\Набиюлла\\Desktop\\Projects\\ledger\\.runtime\\events-demo\\3e49a6f8-a35b-4d37-a411-130efaf940a2\\44-component-logs.stderr.log"
+                  }
+              ],
+    "measurements":  [
+                         {
+                             "phase":  "limiter",
+                             "command_seconds":  1.8868437,
+                             "result":  {
+                                            "allowed":  1,
+                                            "configured_limit":  60,
+                                            "gateways":  2,
+                                            "infrastructure_errors":  0,
+                                            "rate_limited":  0,
+                                            "requests":  1
+                                        }
+                         },
+                         {
+                             "phase":  "normal",
+                             "command_seconds":  2.0061465,
+                             "result":  {
+                                            "activity":  {
+                                                             "entries":  [
+                                                                             {
+                                                                                 "event_id":  "623d7cbd-cbed-4700-8ee1-9dcb1e6100af",
+                                                                                 "journal_transaction_id":  "623d7cbd-cbed-4700-8ee1-9dcb1e6100af",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:03:36.882124Z",
+                                                                                 "projected_at":  "2026-10-30T15:03:37.005563Z",
+                                                                                 "sequence":  "66"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "bd9bdbed-5533-4256-9444-c111db9672e6",
+                                                                                 "journal_transaction_id":  "bd9bdbed-5533-4256-9444-c111db9672e6",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.94478Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.517184Z",
+                                                                                 "sequence":  "65"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "48d15f64-079f-4149-8ac7-75ad7118986e",
+                                                                                 "journal_transaction_id":  "48d15f64-079f-4149-8ac7-75ad7118986e",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.928715Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.506586Z",
+                                                                                 "sequence":  "64"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "c1d38719-57f2-4a81-8dea-23b21ef0ad8b",
+                                                                                 "journal_transaction_id":  "c1d38719-57f2-4a81-8dea-23b21ef0ad8b",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.912934Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.494193Z",
+                                                                                 "sequence":  "63"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "a1811e5c-0da0-4761-ba1d-e96780f31864",
+                                                                                 "journal_transaction_id":  "a1811e5c-0da0-4761-ba1d-e96780f31864",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.860256Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.483186Z",
+                                                                                 "sequence":  "62"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "1a6265c8-6e0d-4802-a976-90ec84eaf71b",
+                                                                                 "journal_transaction_id":  "1a6265c8-6e0d-4802-a976-90ec84eaf71b",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.845993Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.472287Z",
+                                                                                 "sequence":  "61"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "a5fc0a9d-b3f8-45ef-8898-59697a743e56",
+                                                                                 "journal_transaction_id":  "a5fc0a9d-b3f8-45ef-8898-59697a743e56",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.819388Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.455293Z",
+                                                                                 "sequence":  "60"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "7706fc25-31de-47cf-a859-f8bfc3bca817",
+                                                                                 "journal_transaction_id":  "7706fc25-31de-47cf-a859-f8bfc3bca817",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.960514Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.449996Z",
+                                                                                 "sequence":  "59"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "6a7897ae-2bec-451e-8db9-a7f7df8989bb",
+                                                                                 "journal_transaction_id":  "6a7897ae-2bec-451e-8db9-a7f7df8989bb",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.898536Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.444112Z",
+                                                                                 "sequence":  "58"
+                                                                             },
+                                                                             {
+                                                                                 "event_id":  "6f3ca2d7-842e-4b04-bbb5-ca304a75e862",
+                                                                                 "journal_transaction_id":  "6f3ca2d7-842e-4b04-bbb5-ca304a75e862",
+                                                                                 "type":  "transfer.created",
+                                                                                 "direction":  "outgoing",
+                                                                                 "amount_minor":  "1",
+                                                                                 "currency":  "RUB",
+                                                                                 "occurred_at":  "2026-10-30T15:00:47.808188Z",
+                                                                                 "projected_at":  "2026-10-30T15:01:01.437699Z",
+                                                                                 "sequence":  "57"
+                                                                             }
+                                                                         ],
+                                                             "summary":  {
+                                                                             "account_id":  "69cd7d1a-1b69-47b2-a9e8-1878ea6341d5",
+                                                                             "incoming_minor":  "2500",
+                                                                             "outgoing_minor":  "2564",
+                                                                             "incoming_count":  "1",
+                                                                             "outgoing_count":  "65"
+                                                                         },
+                                                             "next_cursor":  "eyJhIjoiNjljZDdkMWEtMWI2OS00N2IyLWE5ZTgtMTg3OGVhNjM0MWQ1IiwidSI6NjYsImIiOjU3fQ"
+                                                         },
+                                            "ledger":  {
+                                                           "ok":  true,
+                                                           "accounts":  3,
+                                                           "transactions":  68,
+                                                           "issue_count":  0,
+                                                           "issues":  [
+
+                                                                      ]
+                                                       },
+                                            "projection":  {
+                                                               "ok":  true,
+                                                               "ledger_events":  66,
+                                                               "projected_events":  66,
+                                                               "pending_events":  0,
+                                                               "activity":  {
+                                                                                "ok":  true,
+                                                                                "events":  66,
+                                                                                "entries":  132,
+                                                                                "accounts":  2,
+                                                                                "issue_count":  0,
+                                                                                "issues":  [
+
+                                                                                           ]
+                                                                            },
+                                                               "issues":  [
+
+                                                                          ]
+                                                           },
+                                            "replayed_id":  "411500f6-98db-4f0c-b4ca-eef275015d8e",
+                                            "reversal_id":  "bbb8f4cd-4728-44af-9228-c3a2f9567576",
+                                            "transfer_id":  "411500f6-98db-4f0c-b4ca-eef275015d8e"
+                                        }
+                         },
+                         {
+                             "phase":  "enqueue",
+                             "command_seconds":  1.9084067999999998,
+                             "result":  {
+                                            "oldest_backlog_seconds":  0.221683,
+                                            "outbox_backlog":  20,
+                                            "outbox_events":  86,
+                                            "projected_events":  66
+                                        }
+                         },
+                         {
+                             "phase":  "status",
+                             "command_seconds":  1.9656624999999999,
+                             "result":  {
+                                            "oldest_backlog_seconds":  12.211262,
+                                            "outbox_backlog":  20,
+                                            "outbox_events":  86,
+                                            "projected_events":  66
+                                        }
+                         },
+                         {
+                             "phase":  "sigterm",
+                             "service":  "publisher",
+                             "scenario":  "kafka_outage",
+                             "docker_stop_seconds":  3.7021899,
+                             "container_exit_code":  0
+                         },
+                         {
+                             "phase":  "recovery",
+                             "service":  "activity",
+                             "reason":  "kafka_outage",
+                             "action":  "explicit_operator_restart",
+                             "command_seconds":  7.0879758
+                         },
+                         {
+                             "phase":  "verify",
+                             "command_seconds":  2.0722233,
+                             "result":  {
+                                            "catch_up_seconds":  0.036273422,
+                                            "ledger":  {
+                                                           "ok":  true,
+                                                           "accounts":  3,
+                                                           "transactions":  88,
+                                                           "issue_count":  0,
+                                                           "issues":  [
+
+                                                                      ]
+                                                       },
+                                            "projection":  {
+                                                               "ok":  true,
+                                                               "ledger_events":  86,
+                                                               "projected_events":  86,
+                                                               "pending_events":  0,
+                                                               "activity":  {
+                                                                                "ok":  true,
+                                                                                "events":  86,
+                                                                                "entries":  172,
+                                                                                "accounts":  2,
+                                                                                "issue_count":  0,
+                                                                                "issues":  [
+
+                                                                                           ]
+                                                                            },
+                                                               "issues":  [
+
+                                                                          ]
+                                                           }
+                                        }
+                         },
+                         {
+                             "phase":  "enqueue",
+                             "command_seconds":  2.0720817,
+                             "result":  {
+                                            "oldest_backlog_seconds":  0.030134,
+                                            "outbox_backlog":  2,
+                                            "outbox_events":  106,
+                                            "projected_events":  86
+                                        }
+                         },
+                         {
+                             "phase":  "status",
+                             "command_seconds":  1.8202517999999999,
+                             "result":  {
+                                            "oldest_backlog_seconds":  0,
+                                            "outbox_backlog":  0,
+                                            "outbox_events":  106,
+                                            "projected_events":  86
+                                        }
+                         },
+                         {
+                             "phase":  "verify",
+                             "command_seconds":  1.8936849,
+                             "result":  {
+                                            "catch_up_seconds":  0.042740833,
+                                            "ledger":  {
+                                                           "ok":  true,
+                                                           "accounts":  3,
+                                                           "transactions":  108,
+                                                           "issue_count":  0,
+                                                           "issues":  [
+
+                                                                      ]
+                                                       },
+                                            "projection":  {
+                                                               "ok":  true,
+                                                               "ledger_events":  106,
+                                                               "projected_events":  106,
+                                                               "pending_events":  0,
+                                                               "activity":  {
+                                                                                "ok":  true,
+                                                                                "events":  106,
+                                                                                "entries":  212,
+                                                                                "accounts":  2,
+                                                                                "issue_count":  0,
+                                                                                "issues":  [
+
+                                                                                           ]
+                                                                            },
+                                                               "issues":  [
+
+                                                                          ]
+                                                           }
+                                        }
+                         },
+                         {
+                             "phase":  "replay",
+                             "command_seconds":  2.4588665,
+                             "result":  {
+                                            "after":  {
+                                                          "ok":  true,
+                                                          "events":  106,
+                                                          "entries":  212,
+                                                          "accounts":  2,
+                                                          "issue_count":  0,
+                                                          "issues":  [
+
+                                                                     ]
+                                                      },
+                                            "before":  {
+                                                           "ok":  true,
+                                                           "events":  106,
+                                                           "entries":  212,
+                                                           "accounts":  2,
+                                                           "issue_count":  0,
+                                                           "issues":  [
+
+                                                                      ]
+                                                       },
+                                            "counts_unchanged":  true,
+                                            "duration_seconds":  0.456119657,
+                                            "group_id":  "ledger-replay-909e93bd-8f67-4925-9ece-03ebac36f723"
+                                        }
+                         },
+                         {
+                             "phase":  "limiter",
+                             "command_seconds":  36.8414729,
+                             "result":  {
+                                            "allowed":  60,
+                                            "configured_limit":  60,
+                                            "gateways":  2,
+                                            "infrastructure_errors":  0,
+                                            "rate_limited":  20,
+                                            "requests":  80
+                                        }
+                         },
+                         {
+                             "phase":  "redis-outage",
+                             "command_seconds":  2.1587524,
+                             "result":  {
+                                            "code":  "rate_limiter_unavailable",
+                                            "http_status":  503,
+                                            "idempotency_records_for_key":  0
+                                        }
+                         },
+                         {
+                             "phase":  "sigterm",
+                             "service":  "ledger",
+                             "docker_stop_seconds":  0.9174198,
+                             "container_exit_code":  0
+                         },
+                         {
+                             "phase":  "sigterm",
+                             "service":  "gateway",
+                             "docker_stop_seconds":  1.0725055,
+                             "container_exit_code":  0
+                         },
+                         {
+                             "phase":  "sigterm",
+                             "service":  "gateway2",
+                             "docker_stop_seconds":  1.1545081,
+                             "container_exit_code":  0
+                         },
+                         {
+                             "phase":  "sigterm",
+                             "service":  "activity",
+                             "docker_stop_seconds":  1.0052725,
+                             "container_exit_code":  0
+                         },
+                         {
+                             "phase":  "sigterm",
+                             "service":  "publisher",
+                             "docker_stop_seconds":  1.0225471,
+                             "container_exit_code":  0
+                         },
+                         {
+                             "phase":  "verify",
+                             "command_seconds":  1.8398653999999999,
+                             "result":  {
+                                            "catch_up_seconds":  0.041357503,
+                                            "ledger":  {
+                                                           "ok":  true,
+                                                           "accounts":  3,
+                                                           "transactions":  108,
+                                                           "issue_count":  0,
+                                                           "issues":  [
+
+                                                                      ]
+                                                       },
+                                            "projection":  {
+                                                               "ok":  true,
+                                                               "ledger_events":  106,
+                                                               "projected_events":  106,
+                                                               "pending_events":  0,
+                                                               "activity":  {
+                                                                                "ok":  true,
+                                                                                "events":  106,
+                                                                                "entries":  212,
+                                                                                "accounts":  2,
+                                                                                "issue_count":  0,
+                                                                                "issues":  [
+
+                                                                                           ]
+                                                                            },
+                                                               "issues":  [
+
+                                                                          ]
+                                                           }
+                                        }
+                         }
+                     ],
+    "services":  [
+                     {
+                         "service":  "db",
+                         "image":  "postgres:17.9-bookworm@sha256:47f917f7409eacd22fc5dfb1dee634e1b55cf0c01d1a7eb701be2227a03e0641",
+                         "cpus":  2,
+                         "memory_limit_bytes":  "1073741824"
+                     },
+                     {
+                         "service":  "kafka",
+                         "image":  "apache/kafka:4.3.2@sha256:852a0d49fc4e656b022e7f23785411802c9a088c78a7c5e39f33969de9c227a7",
+                         "cpus":  2,
+                         "memory_limit_bytes":  "1073741824"
+                     },
+                     {
+                         "service":  "redis",
+                         "image":  "redis:8.2.11-bookworm@sha256:99ffb973380cc2f47bca06bd094f7f8c7138a0879a63cb8939896a22b7a65bba",
+                         "cpus":  1,
+                         "memory_limit_bytes":  "268435456"
+                     },
+                     {
+                         "service":  "ledger",
+                         "image":  "ledgercore:events-local",
+                         "cpus":  1,
+                         "memory_limit_bytes":  "268435456"
+                     },
+                     {
+                         "service":  "publisher",
+                         "image":  "ledgercore:events-local",
+                         "cpus":  1,
+                         "memory_limit_bytes":  "268435456"
+                     },
+                     {
+                         "service":  "activity",
+                         "image":  "ledgercore:events-local",
+                         "cpus":  1,
+                         "memory_limit_bytes":  "268435456"
+                     },
+                     {
+                         "service":  "gateway",
+                         "image":  "ledgercore:events-local",
+                         "cpus":  1,
+                         "memory_limit_bytes":  "268435456"
+                     },
+                     {
+                         "service":  "gateway2",
+                         "image":  "ledgercore:events-local",
+                         "cpus":  1,
+                         "memory_limit_bytes":  "268435456"
+                     }
+                 ],
+    "rate_limit":  "60",
+    "rate_window":  "1m",
+    "host":  {
+                 "server_version":  "28.1.1",
+                 "cpu_count":  16,
+                 "memory_bytes":  8011022336
+             },
+    "kafka_outage":  {
+                         "explicit_hold_seconds":  10,
+                         "stop_start_command_span_seconds":  49.6449928
+                     },
+    "activity_outage":  {
+                            "explicit_hold_seconds":  10,
+                            "stop_start_command_span_seconds":  21.7005826
+                        },
+    "services_restored":  true,
+    "finished_at":  "2026-10-30T15:06:30.4531943+00:00"
+}

@@ -1,0 +1,7 @@
+libprotoc 36.2
+protoc-gen-go v1.36.12
+protoc-gen-go-grpc 1.6.2
+f1a5bbd69be18bc96fac654ae5b01cad1dc1cd4cfbf81e35ca11695c5f8f03f5  gen/activity/v1/activity.pb.go
+0bdfa15c6ea62a1b70038b800772e7ae4d4ac22d05ad6a0883c4de4e87d7dd87  gen/activity/v1/activity_grpc.pb.go
+82b51777d42df07a59f5206bfd8286ec7e1703d910a99b547365ef21775fa0f4  gen/ledger/v1/ledger.pb.go
+a21cdeb10999099db0966dce101f70c6eaa5a030453d0d9880cfffa9a395b952  gen/ledger/v1/ledger_grpc.pb.go

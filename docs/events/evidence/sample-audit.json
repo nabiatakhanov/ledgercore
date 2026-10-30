@@ -1,0 +1,251 @@
+{
+  "status": "passed",
+  "source_commit": "05ecfef624e3ae36d200efd402fac5fa1dd78875",
+  "benchmark_run_id": "f48768cb-e751-4377-87e0-279e6fc2edbc",
+  "http_samples": 2304,
+  "commit_to_projection_samples": 2304,
+  "unique_transaction_ids": 2304,
+  "largest_timestamp_delta_discrepancy_ms": 2.2737367544323206e-13,
+  "quantile_method": "nearest rank: sorted raw values at ceil(n*p)-1",
+  "case_checks": [
+    {
+      "clients": 1,
+      "repeat": 1,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 12.554312,
+        "p95_ms": 16.660062,
+        "p99_ms": 23.173205,
+        "max_ms": 33.640577
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 28.678,
+        "p95_ms": 46.021,
+        "p99_ms": 75.498,
+        "max_ms": 106.736
+      },
+      "requests_per_second": 75.33295431087572
+    },
+    {
+      "clients": 1,
+      "repeat": 2,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 11.659251,
+        "p95_ms": 15.294441,
+        "p99_ms": 17.868069,
+        "max_ms": 38.701566
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 26.19,
+        "p95_ms": 53.657,
+        "p99_ms": 76.864,
+        "max_ms": 98.956
+      },
+      "requests_per_second": 81.87672198220264
+    },
+    {
+      "clients": 1,
+      "repeat": 3,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 11.500407,
+        "p95_ms": 13.790247,
+        "p99_ms": 14.894259,
+        "max_ms": 16.71257
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 24.736,
+        "p95_ms": 28.498,
+        "p99_ms": 36.505,
+        "max_ms": 42.339
+      },
+      "requests_per_second": 84.42516441035666
+    },
+    {
+      "clients": 8,
+      "repeat": 1,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 18.493228,
+        "p95_ms": 63.860667,
+        "p99_ms": 83.137928,
+        "max_ms": 83.369458
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 903.537,
+        "p95_ms": 1539.221,
+        "p99_ms": 1572.473,
+        "max_ms": 1582.045
+      },
+      "requests_per_second": 290.532590715235
+    },
+    {
+      "clients": 8,
+      "repeat": 2,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 19.497059,
+        "p95_ms": 56.403479,
+        "p99_ms": 61.612645,
+        "max_ms": 68.059328
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 730.587,
+        "p95_ms": 1336.326,
+        "p99_ms": 1360.68,
+        "max_ms": 1368.929
+      },
+      "requests_per_second": 304.2214387162798
+    },
+    {
+      "clients": 8,
+      "repeat": 3,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 16.620018,
+        "p95_ms": 70.601663,
+        "p99_ms": 77.544983,
+        "max_ms": 82.944044
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 955.07,
+        "p95_ms": 1203.33,
+        "p99_ms": 1229.201,
+        "max_ms": 1263.905
+      },
+      "requests_per_second": 283.80580035133096
+    },
+    {
+      "clients": 32,
+      "repeat": 1,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 108.042639,
+        "p95_ms": 186.845471,
+        "p99_ms": 199.732414,
+        "max_ms": 211.417116
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 1075.885,
+        "p95_ms": 1393.728,
+        "p99_ms": 1435.503,
+        "max_ms": 1444.932
+      },
+      "requests_per_second": 272.8384535250863
+    },
+    {
+      "clients": 32,
+      "repeat": 2,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 97.052014,
+        "p95_ms": 161.545556,
+        "p99_ms": 171.816504,
+        "max_ms": 172.836602
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 958.093,
+        "p95_ms": 1263.006,
+        "p99_ms": 1331.255,
+        "max_ms": 1349.516
+      },
+      "requests_per_second": 360.7809398268226
+    },
+    {
+      "clients": 32,
+      "repeat": 3,
+      "http_latency": {
+        "count": 256,
+        "p50_ms": 95.938519,
+        "p95_ms": 122.295748,
+        "p99_ms": 169.8499,
+        "max_ms": 177.819989
+      },
+      "commit_to_projection": {
+        "count": 256,
+        "p50_ms": 927.733,
+        "p95_ms": 1295.331,
+        "p99_ms": 1335.711,
+        "max_ms": 1360.144
+      },
+      "requests_per_second": 326.23359320285783
+    }
+  ],
+  "client_summaries": [
+    {
+      "clients": 1,
+      "median_requests_per_second": 81.87672198220264,
+      "min_requests_per_second": 75.33295431087572,
+      "max_requests_per_second": 84.42516441035666,
+      "pooled_http_latency": {
+        "count": 768,
+        "p50_ms": 11.884049,
+        "p95_ms": 15.256472,
+        "p99_ms": 18.631263,
+        "max_ms": 38.701566
+      },
+      "pooled_commit_to_projection": {
+        "count": 768,
+        "p50_ms": 26.231,
+        "p95_ms": 43.868,
+        "p99_ms": 69.683,
+        "max_ms": 106.736
+      },
+      "median_case_http_p95_ms": 15.294441,
+      "median_case_projection_p95_ms": 46.021
+    },
+    {
+      "clients": 8,
+      "median_requests_per_second": 290.532590715235,
+      "min_requests_per_second": 283.80580035133096,
+      "max_requests_per_second": 304.2214387162798,
+      "pooled_http_latency": {
+        "count": 768,
+        "p50_ms": 18.389024,
+        "p95_ms": 63.635631,
+        "p99_ms": 78.384674,
+        "max_ms": 83.369458
+      },
+      "pooled_commit_to_projection": {
+        "count": 768,
+        "p50_ms": 900.793,
+        "p95_ms": 1469.698,
+        "p99_ms": 1560.924,
+        "max_ms": 1582.045
+      },
+      "median_case_http_p95_ms": 63.860667,
+      "median_case_projection_p95_ms": 1336.326
+    },
+    {
+      "clients": 32,
+      "median_requests_per_second": 326.23359320285783,
+      "min_requests_per_second": 272.8384535250863,
+      "max_requests_per_second": 360.7809398268226,
+      "pooled_http_latency": {
+        "count": 768,
+        "p50_ms": 99.608927,
+        "p95_ms": 173.335204,
+        "p99_ms": 191.832283,
+        "max_ms": 211.417116
+      },
+      "pooled_commit_to_projection": {
+        "count": 768,
+        "p50_ms": 975.346,
+        "p95_ms": 1315.712,
+        "p99_ms": 1414.063,
+        "max_ms": 1444.932
+      },
+      "median_case_http_p95_ms": 161.545556,
+      "median_case_projection_p95_ms": 1295.331
+    }
+  ]
+}

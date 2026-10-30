@@ -1,0 +1,31 @@
+{
+  "report_created_at": "2026-10-30T15:22:18.2588237+00:00",
+  "source_commit": "05ecfef624e3ae36d200efd402fac5fa1dd78875",
+  "note": "Exit codes observed in completed execution-tool results; empty logs alone are not used to infer success.",
+  "checks": [
+    {
+      "command": "docker compose --profile test run --build --rm integration",
+      "exit_code": 0,
+      "stdout": "integration.log",
+      "stderr": "integration-stderr.log",
+      "scope": "full real-infrastructure go test -p 1 -race -count=1 ./..."
+    },
+    {
+      "command": "go vet ./...",
+      "exit_code": 0,
+      "scope": "native Windows toolchain"
+    },
+    {
+      "command": "go run honnef.co/go/tools/cmd/staticcheck@v0.7.0 ./...",
+      "exit_code": 0,
+      "scope": "native Windows toolchain"
+    },
+    {
+      "command": "pinned protoc36.2 + protoc-gen-go1.36.12 + protoc-gen-go-grpc1.6.2; diff generated tree",
+      "exit_code": 0,
+      "input_commit": "0400fcff1ed0a5fd56409572660b47cd9c3f5679",
+      "scope": "ephemeral Linux container; source contracts unchanged in05ecfef",
+      "stdout": "proto-linux.log"
+    }
+  ]
+}

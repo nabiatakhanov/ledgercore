@@ -1,0 +1,27 @@
+{
+    "label":  "after-benchmark",
+    "captured_at":  "2026-10-30T15:18:53.7425006+00:00",
+    "source_commit":  "05ecfef624e3ae36d200efd402fac5fa1dd78875",
+    "source_dirty":  false,
+    "source_content_sha256":  "77f6649d73cb42dacc5c75ffc819eb423aa518b3419edd66f34130334fa3506a",
+    "ledger":  {
+                   "database":  "ledgercore",
+                   "database_size_bytes":  15251123,
+                   "accounts":  249,
+                   "journal_transactions":  2658,
+                   "postings":  5316,
+                   "idempotency_records":  2658,
+                   "outbox_events":  2410,
+                   "outbox_unpublished":  0,
+                   "demo_funding_keys":  2,
+                   "normal_transfer_id":  "411500f6-98db-4f0c-b4ca-eef275015d8e",
+                   "normal_reversal_id":  "bbb8f4cd-4728-44af-9228-c3a2f9567576"
+               },
+    "activity":  {
+                     "database":  "activity",
+                     "database_size_bytes":  9983667,
+                     "inbox_events":  2410,
+                     "entries":  4820,
+                     "summaries":  248
+                 }
+}

@@ -75,7 +75,7 @@ func run(log *slog.Logger) (result error) {
 			return errors.New("ledger unavailable")
 		}
 		if e := cache.Ping(ctx).Err(); e != nil {
-			return errors.New("Redis unavailable")
+			return errors.New("redis unavailable")
 		}
 		return nil
 	}
@@ -86,12 +86,12 @@ func run(log *slog.Logger) (result error) {
 	metrics := server(env("METRICS_ADDR", "127.0.0.1:9090"), mux)
 	a, err := net.Listen("tcp", api.Addr)
 	if err != nil {
-		return errors.New("Gateway HTTP listen failed")
+		return errors.New("gateway HTTP listen failed")
 	}
 	defer a.Close()
 	b, err := net.Listen("tcp", metrics.Addr)
 	if err != nil {
-		return errors.New("Gateway metrics listen failed")
+		return errors.New("gateway metrics listen failed")
 	}
 	defer b.Close()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -104,7 +104,7 @@ func run(log *slog.Logger) (result error) {
 	case <-ctx.Done():
 	case err = <-results:
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			result = errors.New("Gateway listener failed")
+			result = errors.New("gateway listener failed")
 		}
 	}
 	deadline = time.Now().Add(10 * time.Second)

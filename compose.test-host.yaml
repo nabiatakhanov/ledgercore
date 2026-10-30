@@ -1,0 +1,13 @@
+# Optional loopback endpoints for native CLI integration/fault tests.
+# Main compose.yaml keeps infrastructure and write gRPC ports private.
+services:
+  db:
+    ports: [127.0.0.1:55434:5432]
+  redis:
+    ports: [127.0.0.1:16380:6379]
+  kafka:
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,HOST://0.0.0.0:19093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,HOST://127.0.0.1:19093
+    ports: [127.0.0.1:19093:19093]

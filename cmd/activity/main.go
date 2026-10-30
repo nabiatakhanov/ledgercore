@@ -12,11 +12,13 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	pb "ledgercore/gen/activity/v1"
@@ -70,7 +72,7 @@ func pool(ctx context.Context, key string) (*pgxpool.Pool, error) {
 	}
 	return p, nil
 }
-func run(ctx context.Context, log *slog.Logger, args []string) error {
+func run(ctx context.Context, log *slog.Logger, args []string) (result error) {
 	if len(args) > 0 && (len(args) != 1 || args[0] != "migrate") {
 		return errors.New("usage: activity [migrate]")
 	}
@@ -94,13 +96,17 @@ func run(ctx context.Context, log *slog.Logger, args []string) error {
 	if err != nil {
 		return err
 	}
+	var cleanupDeadline time.Time
 	defer func() {
-		shutdown, done := context.WithTimeout(context.Background(), 5*time.Second)
+		if cleanupDeadline.IsZero() {
+			cleanupDeadline = time.Now().Add(5 * time.Second)
+		}
+		shutdown, done := context.WithDeadline(context.Background(), cleanupDeadline)
 		defer done()
-		_ = rpc.CloseWithin(shutdown, p.Close)
+		result = errors.Join(result, rpc.CloseWithin(shutdown, p.Close))
 	}()
 	registry := prometheus.NewRegistry()
-	registry.MustRegister(prometheus.NewGoCollector(), prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
+	registry.MustRegister(collectors.NewGoCollector(), collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	parallel, err := strconv.Atoi(env("ACTIVITY_PARTITION_CONCURRENCY", "4"))
 	if err != nil {
 		return errors.New("invalid partition concurrency")
@@ -109,10 +115,20 @@ func run(ctx context.Context, log *slog.Logger, args []string) error {
 	if err != nil {
 		return err
 	}
+	consumerClosed := make(chan struct{})
+	closeConsumer := sync.OnceFunc(func() { c.Close(); close(consumerClosed) })
 	defer func() {
-		shutdown, done := context.WithTimeout(context.Background(), 5*time.Second)
+		if cleanupDeadline.IsZero() {
+			cleanupDeadline = time.Now().Add(5 * time.Second)
+		}
+		shutdown, done := context.WithDeadline(context.Background(), cleanupDeadline)
 		defer done()
-		_ = rpc.CloseWithin(shutdown, c.Close)
+		go closeConsumer()
+		select {
+		case <-consumerClosed:
+		case <-shutdown.Done():
+			result = errors.Join(result, shutdown.Err())
+		}
 	}()
 	check := func(checkCtx context.Context) error {
 		if err := p.Ping(checkCtx); err != nil {
@@ -138,7 +154,7 @@ func run(ctx context.Context, log *slog.Logger, args []string) error {
 		ready, done := context.WithTimeout(r.Context(), time.Second)
 		defer done()
 		if check(ready) != nil {
-			http.Error(w, "not ready", 503)
+			http.Error(w, "not ready", http.StatusServiceUnavailable)
 			return
 		}
 		w.WriteHeader(200)
@@ -156,12 +172,25 @@ func run(ctx context.Context, log *slog.Logger, args []string) error {
 	case err = <-errs:
 	}
 	done()
-	shutdown, finish := context.WithTimeout(context.Background(), 10*time.Second)
+	cleanupDeadline = time.Now().Add(10 * time.Second)
+	shutdown, finish := context.WithDeadline(context.Background(), cleanupDeadline)
 	defer finish()
-	_ = metrics.Shutdown(shutdown)
-	_ = rpc.GracefulStop(shutdown, s)
+	go closeConsumer()
+	drains := make(chan error, 2)
+	go func() {
+		e := metrics.Shutdown(shutdown)
+		if e != nil {
+			_ = metrics.Close()
+		}
+		drains <- e
+	}()
+	go func() { drains <- rpc.GracefulStop(shutdown, s) }()
 	if errors.Is(err, http.ErrServerClosed) || errors.Is(err, grpc.ErrServerStopped) || errors.Is(err, context.Canceled) {
-		return nil
+		err = nil
 	}
-	return err
+	result = err
+	for range 2 {
+		result = errors.Join(result, <-drains)
+	}
+	return result
 }

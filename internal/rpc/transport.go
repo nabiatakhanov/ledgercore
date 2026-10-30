@@ -148,7 +148,10 @@ func Dial(target, token string, m *Metrics) (*grpc.ClientConn, error) {
 		m.observe("client", method, start, err)
 		return err
 	}
-	return grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithDisableRetry(), grpc.WithUnaryInterceptor(intercept), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(MaxMessageBytes), grpc.MaxCallSendMsgSize(MaxMessageBytes)))
+	// Retry and deadline policy belongs to this client. DNS TXT service-config
+	// lookups can also block Docker service-name resolution on an external DNS
+	// timeout even after its A record has resolved successfully.
+	return grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithDisableServiceConfig(), grpc.WithDisableRetry(), grpc.WithUnaryInterceptor(intercept), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(MaxMessageBytes), grpc.MaxCallSendMsgSize(MaxMessageBytes)))
 }
 
 // Only known application failures cross the trust boundary; raw SQL never does.

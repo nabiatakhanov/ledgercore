@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ledgercore:ledger-operation:v1",
+  "title": "LedgerCore operation event v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["event_id", "schema_version", "type", "journal_transaction_id", "occurred_at", "from_account_id", "to_account_id", "amount_minor", "currency"],
+  "properties": {
+    "event_id": {"type": "string", "format": "uuid", "description": "Equals journal_transaction_id; the stable operation UUID."},
+    "schema_version": {"const": 1},
+    "type": {"enum": ["transfer.created", "transfer.reversed"]},
+    "journal_transaction_id": {"type": "string", "format": "uuid"},
+    "occurred_at": {"type": "string", "format": "date-time", "description": "UTC journal creation time before the final source SQL commit."},
+    "from_account_id": {"type": "string", "format": "uuid"},
+    "to_account_id": {"type": "string", "format": "uuid"},
+    "amount_minor": {"type": "string", "pattern": "^[1-9][0-9]{0,18}$", "description": "Positive integral RUB kopecks; receiver additionally enforces <=9223372036854775807 without floating point."},
+    "currency": {"const": "RUB"},
+    "reversal_of": {"type": "string", "format": "uuid"}
+  },
+  "allOf": [{"if": {"properties": {"type": {"const": "transfer.reversed"}}}, "then": {"required": ["reversal_of"]}}],
+  "description": "Semantic receiver validation also requires canonical lowercase UUIDs, distinct account IDs, event_id equal to operation ID, and a valid reversal reference shape. Unknown optional fields remain additive-compatible. No tokens, idempotency keys or client metadata are emitted. See internal/events for executable validation."
+}

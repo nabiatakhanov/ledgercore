@@ -7,50 +7,56 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    services:
-      postgres:
-        image: postgres:17.9-bookworm@sha256:47f917f7409eacd22fc5dfb1dee634e1b55cf0c01d1a7eb701be2227a03e0641
-        env:
-          POSTGRES_USER: ledger_bootstrap
-          POSTGRES_PASSWORD: ci-bootstrap
-          POSTGRES_DB: ledgercore_test
-        ports: [5432:5432]
-        options: >-
-          --health-cmd "pg_isready -h 127.0.0.1 -U ledger_bootstrap -d ledgercore_test"
-          --health-interval 2s --health-timeout 3s --health-retries 30
-    env:
-      PGPASSWORD: ci-bootstrap
-      PGHOST: 127.0.0.1
-      PGPORT: "5432"
-      POSTGRES_USER: ledger_bootstrap
-      POSTGRES_DB: ledgercore_test
-      LEDGER_MIGRATOR_PASSWORD: ci-migrator
-      LEDGER_APP_PASSWORD: ci-app
-      LEDGER_FIXTURE_PASSWORD: ci-fixture
-      LEDGER_REQUIRE_INTEGRATION: "1"
-      LEDGER_TEST_ADMIN_URL: postgres://ledger_migrator:ci-migrator@127.0.0.1:5432/ledgercore_test?sslmode=disable
-      LEDGER_TEST_DATABASE_URL: postgres://ledger_app:ci-app@127.0.0.1:5432/ledgercore_test?sslmode=disable
-      LEDGER_TEST_FIXTURE_URL: postgres://ledger_fixture:ci-fixture@127.0.0.1:5432/ledgercore_test?sslmode=disable
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version: "1.26.2"
           cache: true
-      - name: Prepare separate database roles
-        run: sh scripts/bootstrap-db.sh
+      - name: Reproduce pinned Protobuf generation
+        run: |
+          make generate
+          git diff --exit-code -- gen proto
       - name: Check formatting
-        run: test -z "$(gofmt -l cmd internal migrations tests)"
+        run: test -z "$(gofmt -l cmd internal migrations tests gen)"
       - name: Unit tests with race detector
         run: make test
-      - name: Required real PostgreSQL integration tests with race detector
-        run: make test-integration-local
       - name: Vet and Staticcheck
         run: make lint
-      - name: Build
+      - name: Build all commands
         run: make build
-      - name: Validate Compose and build non-root image
+      - name: Validate all Compose profiles
         run: |
-          docker compose --profile tools --profile test config --quiet
-          docker build --target runtime -t ledgercore:ci .
+          docker compose --profile tools --profile test --profile compat config --quiet
+          docker compose -f compose.yaml -f compose.test-host.yaml --profile test config --quiet
+      - name: Required PostgreSQL, Kafka, Redis and gRPC integration with race detector
+        run: make test-integration
+      - name: Enable isolated loopback infrastructure for real container faults
+        run: docker compose -f compose.yaml -f compose.test-host.yaml up -d --wait --wait-timeout 180 db kafka redis
+      - name: Actual Kafka and Redis outage/recovery through two Gateways
+        env:
+          LEDGER_REQUIRE_EVENTS_INTEGRATION: "1"
+          LEDGER_ALLOW_CONTAINER_FAULTS: "1"
+          EVENTS_E2E_TEST_DATABASE_URL: postgres://ledger_app:ledger-local-app-only@127.0.0.1:55434/ledger_events_e2e_test?sslmode=disable
+          EVENTS_E2E_TEST_MIGRATION_URL: postgres://ledger_migrator:ledger-local-migrator-only@127.0.0.1:55434/ledger_events_e2e_test?sslmode=disable
+          EVENTS_E2E_TEST_FIXTURE_URL: postgres://ledger_fixture:ledger-local-fixture-only@127.0.0.1:55434/ledger_events_e2e_test?sslmode=disable
+          EVENTS_E2E_TEST_PUBLISHER_URL: postgres://ledger_publisher:ledger-local-publisher-only@127.0.0.1:55434/ledger_events_e2e_test?sslmode=disable
+          EVENTS_E2E_TEST_ACTIVITY_DATABASE_URL: postgres://activity_app:activity-local-app-only@127.0.0.1:55434/activity_events_e2e_test?sslmode=disable
+          EVENTS_E2E_TEST_ACTIVITY_MIGRATION_URL: postgres://activity_migrator:activity-local-migrator-only@127.0.0.1:55434/activity_events_e2e_test?sslmode=disable
+          KAFKA_TEST_BROKERS: 127.0.0.1:19093
+          REDIS_ADDR: 127.0.0.1:16380
+        run: |
+          export LEDGER_TEST_KAFKA_CONTAINER="$(docker compose ps -q kafka)"
+          export LEDGER_TEST_REDIS_CONTAINER="$(docker compose ps -q redis)"
+          go test -p 1 -race -count=1 ./tests/events -run '^(TestGatewayGRPCCommitOutcomeAndSharedRedisBudget|TestPublisherRecoveryFencingAndActivityConvergence)$'
+      - name: Build non-root runtime image and start synchronous/asynchronous paths
+        run: docker compose up --build -d --wait --wait-timeout 180
+      - name: Exercise events demonstration
+        run: make demo
+      - name: Diagnostic logs
+        if: failure()
+        run: docker compose --profile test logs --no-color --tail 80
+      - name: Stop this CI project and its containers
+        if: always()
+        run: docker compose --profile test --profile tools --profile compat down --remove-orphans

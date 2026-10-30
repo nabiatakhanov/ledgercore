@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: LedgerCore internal ledger
-  version: 1.0.0
+  version: 1.1.0
   description: |
     Educational RUB ledger with test funds. A static bearer token defines one
     trusted internal scope; it is not per-user authorization. Client accounts
@@ -28,18 +28,34 @@ info:
     commits and never duplicate entries of that original set. Balance and history
     fetched by separate requests need not represent the same instant.
 
-    The request deadline is 5 seconds; DB statement timeout 4 seconds, lock timeout
-    2 seconds. Public API port defaults to 8080. Prometheus GET /metrics is served
-    exclusively on a separate listener, default 127.0.0.1:9090; do not expose that
-    listener outside the trusted monitoring network.
+    The retained financial HTTP adapter uses a 5-second application deadline.
+    Gateway gRPC calls share a 4-second overall deadline across at most two
+    attempts, while Redis admission has its own 300-millisecond budget. Ledger DB
+    statement timeout is 4 seconds and lock timeout 2 seconds. Recommended
+    Gateway host ports are 18080 and 18081. Gateway
+    Prometheus GET /metrics uses separate loopback ports 19090 and 19091. Private
+    Ledger/Activity gRPC endpoints require a separate internal token and are not
+    published by the default Compose configuration.
 
     An independent read-only snapshot reconciliation runs at startup and after
-    each configured RECONCILE_INTERVAL (default 60s, allowed 10s..24h), producing
+    each minute in Ledger gRPC (the compatible HTTP adapter retains its
+    RECONCILE_INTERVAL setting), producing
     ledger_reconciliations_total and duration metrics. The audit has a 30-second
     overall context and the same per-statement DB timeout; a timeout counts as
     failed. It does not repair data or block normal transfers.
+
+    Both Gateways share Redis admission for authenticated POST /v1 requests:
+    default 60 requests per first-request-anchored minute. Lua atomically counts
+    and sets first-only TTL. Replays consume request budget. Exhaustion returns
+    429 with ceil(remaining TTL) Retry-After. Redis outage is fail-closed with
+    503 rate_limiter_unavailable, without a financial command. No balances or
+    financial idempotency records are stored in Redis. Activity reads are
+    eventually consistent and do not determine available funds.
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:18080
+    description: Gateway instance one; private plaintext gRPC behind authenticated HTTP.
+  - url: http://localhost:18081
+    description: Gateway instance two; same Redis write budget.
 security:
   - bearerAuth: []
 tags:
@@ -81,6 +97,7 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
         '413': {$ref: '#/components/responses/BodyTooLarge'}
         '415': {$ref: '#/components/responses/UnsupportedMediaType'}
+        '429': {$ref: '#/components/responses/RateLimited'}
         '503': {$ref: '#/components/responses/Unavailable'}
   /v1/accounts/{id}:
     parameters:
@@ -155,6 +172,7 @@ paths:
         '409': {$ref: '#/components/responses/BusinessConflict'}
         '413': {$ref: '#/components/responses/BodyTooLarge'}
         '415': {$ref: '#/components/responses/UnsupportedMediaType'}
+        '429': {$ref: '#/components/responses/RateLimited'}
         '503': {$ref: '#/components/responses/Unavailable'}
   /v1/transfers/{id}:
     parameters:
@@ -202,6 +220,7 @@ paths:
         '409': {$ref: '#/components/responses/BusinessConflict'}
         '413': {$ref: '#/components/responses/BodyTooLarge'}
         '415': {$ref: '#/components/responses/UnsupportedMediaType'}
+        '429': {$ref: '#/components/responses/RateLimited'}
         '503': {$ref: '#/components/responses/Unavailable'}
   /livez:
     get:
@@ -221,18 +240,50 @@ paths:
   /readyz:
     get:
       tags: [Health]
-      summary: Database readiness
+      summary: Synchronous write-path readiness
       operationId: readyz
       security: []
       responses:
         '200':
-          description: Application role can ping the database within one second.
+          description: Gateway can check Ledger gRPC health and Redis within one second. Activity availability or zero projection lag is not required. In the retained compatible HTTP adapter this endpoint checks only the Ledger database.
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   status: {type: string, enum: [ready]}
+        '503': {$ref: '#/components/responses/Unavailable'}
+  /v1/accounts/{id}/activity:
+    parameters:
+      - {$ref: '#/components/parameters/ID'}
+    get:
+      tags: [Accounts]
+      summary: Read eventually consistent activity and cumulative statistics
+      operationId: getAccountActivity
+      description: |
+        Activity is a separate read model, never an authoritative balance or a
+        funds check. Empty history does not prove that the wallet does not exist.
+        Cursor fixes an account-local upper sequence; summaries are exact decimal
+        strings. Records can appear after an operation committed successfully.
+      parameters:
+        - name: limit
+          in: query
+          schema: {type: integer, minimum: 1, maximum: 100, default: 50}
+        - name: cursor
+          in: query
+          schema: {type: string, maxLength: 256}
+      responses:
+        '200':
+          description: Possibly empty eventually consistent activity page.
+          headers:
+            X-Read-Model:
+              schema: {type: string, enum: [eventually-consistent]}
+            X-Request-ID: {$ref: '#/components/headers/RequestID'}
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ActivityPage'}
+        '400': {$ref: '#/components/responses/InvalidRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
         '503': {$ref: '#/components/responses/Unavailable'}
 components:
   securitySchemes:
@@ -260,6 +311,40 @@ components:
       description: 1..128 visible ASCII characters, unique within operation kind and this trusted contour. Retained without automatic expiry.
       schema: {type: string, minLength: 1, maxLength: 128, pattern: '^[!-~]+$'}
   schemas:
+    ActivityEntry:
+      type: object
+      required: [event_id, journal_transaction_id, type, direction, amount_minor, currency, occurred_at, projected_at, sequence]
+      properties:
+        event_id: {type: string, format: uuid}
+        journal_transaction_id: {type: string, format: uuid}
+        type: {type: string, enum: [transfer.created, transfer.reversed]}
+        direction: {type: string, enum: [incoming, outgoing]}
+        amount_minor: {$ref: '#/components/schemas/Amount'}
+        currency: {type: string, enum: [RUB]}
+        occurred_at: {type: string, format: date-time}
+        projected_at: {type: string, format: date-time, description: Projection SQL insertion time before its commit.}
+        reversal_of: {type: string, format: uuid}
+        sequence: {type: string, pattern: '^[1-9][0-9]*$'}
+    ActivitySummary:
+      type: object
+      description: Exact cumulative NUMERIC statistics; all counts and amounts are decimal strings, not wallet balances.
+      required: [account_id, incoming_minor, outgoing_minor, incoming_count, outgoing_count]
+      properties:
+        account_id: {type: string, format: uuid}
+        incoming_minor: {type: string, pattern: '^[0-9]+$'}
+        outgoing_minor: {type: string, pattern: '^[0-9]+$'}
+        incoming_count: {type: string, pattern: '^[0-9]+$'}
+        outgoing_count: {type: string, pattern: '^[0-9]+$'}
+    ActivityPage:
+      type: object
+      required: [entries, summary]
+      properties:
+        entries:
+          type: array
+          maxItems: 100
+          items: {$ref: '#/components/schemas/ActivityEntry'}
+        summary: {$ref: '#/components/schemas/ActivitySummary'}
+        next_cursor: {type: string, maxLength: 256}
     Amount:
       type: string
       pattern: '^[0-9]+$'
@@ -339,6 +424,14 @@ components:
         error: {code: insufficient_funds, message: insufficient funds}
         request_id: 10000000-0000-4000-8000-000000000001
   responses:
+    RateLimited:
+      description: rate_limited; shared authenticated POST /v1 write budget exhausted. Idempotent retries also count. Window starts at first request and later requests never extend TTL.
+      headers:
+        Retry-After:
+          schema: {type: integer, minimum: 1, description: Ceiling of the remaining Redis TTL in seconds.}
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
     OperationCreated:
       description: Committed operation or replay of that operation.
       headers:
@@ -394,7 +487,7 @@ components:
         application/json:
           schema: {$ref: '#/components/schemas/Error'}
     Unavailable:
-      description: temporarily_unavailable or not_ready. Retry same operation key; result may be unknown after commit transport failure. Infrastructure failure is not cached as a business result.
+      description: temporarily_unavailable, not_ready, or rate_limiter_unavailable. Redis outage is fail-closed for writes with503 and is distinct from429. Retry same operation key; result may be unknown after commit transport failure. Infrastructure failure is not cached as a business result.
       headers:
         Retry-After:
           schema: {type: integer, example: 1}

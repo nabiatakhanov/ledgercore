@@ -1,9 +1,10 @@
+param([string]$HistoricalTip = '4a4ebd17158341f4740c31377a6d15951bc8e46f')
 $ErrorActionPreference = 'Stop'
 $lower = [DateTimeOffset]::Parse('2025-05-08T00:00:00+03:00')
 $upper = [DateTimeOffset]::Parse('2025-08-25T00:00:00+03:00')
 $previous = $null
 $records = @()
-foreach ($sha in (git rev-list --reverse HEAD)) {
+foreach ($sha in (git rev-list --reverse $HistoricalTip)) {
     $fields = (git show --no-patch --format='%aI|%cI|%s' $sha).Split('|', 3)
     if ($LASTEXITCODE -ne 0 -or $fields.Count -ne 3) { throw 'Cannot read commit metadata' }
     $author = [DateTimeOffset]::Parse($fields[0])

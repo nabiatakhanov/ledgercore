@@ -1,5 +1,9 @@
 # Local verification environment
 
+Archived environment notes for the original HTTP/PostgreSQL acceptance. Docker
+NOT RUN statements below describe 2026-10-29 only; current extension execution is
+recorded separately in [events/acceptance.md](events/acceptance.md).
+
 Actual verification date: 2026-10-29 (Europe/Moscow). Historical Git dates are
 user-selected metadata and do not describe when these tool versions existed.
 

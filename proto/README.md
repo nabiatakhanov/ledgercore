@@ -43,8 +43,11 @@ ErrorInfo preserves the bounded domain code, HTTP status and replay flag. A
 successful OperationResponse also preserves its replay flag. Gateway retries
 only UNAVAILABLE once (at most two calls) within one four-second overall deadline,
 with the same immutable request/key and request ID. Reads may retry; unkeyed
-CreateAccount never retries its application call. gRPC service-config retries
-are disabled. Permanent internal/SQL constraint failures are not retried by the
+CreateAccount never retries its application call. Built-in gRPC retries
+and DNS TXT service-config lookup are disabled with `WithDisableRetry` and
+`WithDisableServiceConfig`; retry/deadline policy is owned by this client. This
+also avoids a successful Docker A-record lookup waiting on external TXT DNS.
+Permanent internal/SQL constraint failures are not retried by the
 Gateway. The original writer retains its own bounded whole-transaction retry.
 
 DEADLINE_EXCEEDED, disconnection or a 503 does not establish whether commit

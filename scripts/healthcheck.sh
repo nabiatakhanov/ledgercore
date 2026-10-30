@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
-exec 3<>/dev/tcp/127.0.0.1/8080
+port="${HEALTH_PORT:-8080}"
+case "$port" in ''|*[!0-9]*) exit 1 ;; esac
+exec 3<>/dev/tcp/127.0.0.1/"$port"
 printf 'GET /readyz HTTP/1.0\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3
 IFS= read -r -t 3 status <&3
 case "$status" in

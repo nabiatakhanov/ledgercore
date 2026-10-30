@@ -9,11 +9,12 @@ Extension boundaries: Gateway calls LedgerCore and Activity over real gRPC; Redi
 
 New commits use actual dates and configured identity. Existing historical commits remain untouched. No automatic push for this extension.
 
-Baseline check results and runtime availability will be appended after execution.
+This records the initial audit, not a statement of current runtime readiness.
+Final extension checks are recorded in [acceptance.md](acceptance.md).
 
 ## Executed baseline checks
 
 - PASS: original `go test -race ./... -count=1` and `go vet ./...` before extension packages (integration tests skip without URLs in that first command).
 - PASS: original `go test -race ./tests -count=1` with actual ledger_app/ledger_fixture/ledger_migrator logins and native PostgreSQL17.9 in the isolated ledgercore_acceptance_test DB; package24.314s, all14 financial scenarios passed.
-- Docker Desktop clean restart now succeeds. Existing unrelated containers on8080/5432 are preserved. New dedicated infrastructure uses55433/19092/16379 and Gateway18080/18081, with separate databases/roles/topics.
-- Pinned library choices verified from official release pages and Go module registry: grpc-go1.85.0, protoc36.2, protoc-gen-go1.36.12, protoc-gen-go-grpc1.6.2, franz-go1.22.2, go-redis9.23.0. Existing Go1.26.2,pgx5.11.0 and PostgreSQL17.9 are retained. Kafka4.3.2 and Redis8.2.11 images will be pinned to verified digests.
+- Docker Desktop clean restart succeeded during the initial audit. Existing unrelated containers on8080/5432 were preserved. Initial dedicated infrastructure used55433/19092/16379 and Gateway18080/18081, with separate databases/roles/topics. The final default Compose keeps infrastructure private; its opt-in host-test override uses55434/19093/16380.
+- Pinned library choices verified from official release pages and Go module registry: grpc-go1.85.0, protoc36.2, protoc-gen-go1.36.12, protoc-gen-go-grpc1.6.2, franz-go1.22.2, go-redis9.23.0. Existing Go1.26.2,pgx5.11.0 and PostgreSQL17.9 are retained. Kafka4.3.2 and Redis8.2.11 images are pinned by tag and digest in Compose.

@@ -111,7 +111,7 @@ func run(parent context.Context, log *slog.Logger) (result error) {
 		c, done := context.WithTimeout(r.Context(), time.Second)
 		defer done()
 		if pool.Ping(c) != nil || producer.Ping(c) != nil {
-			http.Error(w, "dependency unavailable", 503)
+			http.Error(w, "dependency unavailable", http.StatusServiceUnavailable)
 			return
 		}
 		w.WriteHeader(200)

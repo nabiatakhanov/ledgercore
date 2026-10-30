@@ -35,8 +35,8 @@ the available source range; this version does not promise recovery of expired
 unarchived events. Dev Kafka has3 partitions, replication factor1 and minISR1:
 acks=all covers this one broker, with no node/disk redundancy.
 
-Executed before this component commit: real PostgreSQL tests including totals
-beyond int64 and snapshot corruption detection, plus Kafka group/rebalance,
-replay, poison messages, actual rejected DLQ writes, DB failure retaining offsets
-and a killed subprocess after SQL commit before offset commit. Raw final suite
-results are consolidated in the extension acceptance report.
+Integration coverage includes real PostgreSQL totals beyond int64 and snapshot
+corruption detection, Kafka group/rebalance, replay, poison messages, actual
+rejected DLQ writes, DB failure retaining offsets and a killed subprocess after
+SQL commit before offset commit. Executed commands and raw final suite results
+are consolidated in the [extension acceptance report](acceptance.md).

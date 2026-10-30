@@ -20,6 +20,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"ledgercore/internal/activity"
+	"ledgercore/internal/eventaudit"
 	"ledgercore/internal/ledger"
 	"ledgercore/internal/reconcile"
 	"ledgercore/internal/store"
@@ -38,9 +40,42 @@ func main() {
 }
 func run(ctx context.Context, args []string) error {
 	if len(args) == 0 {
-		return errors.New("usage: ledgerctl migrate | fixture --allow-test-funds | demo | reconcile | bench | explain")
+		return errors.New("usage: ledgerctl migrate | migrate-activity | fixture --allow-test-funds | events-demo | events-bench | reconcile | reconcile-activity | demo | bench | explain")
 	}
 	switch args[0] {
+	case "events-demo":
+		return eventsDemo(ctx, args[1:])
+	case "events-bench":
+		return eventsBench(ctx, args[1:])
+	case "migrate-activity":
+		p, err := open(ctx, "ACTIVITY_MIGRATION_DATABASE_URL")
+		if err != nil {
+			return err
+		}
+		defer p.Close()
+		return activity.Migrate(ctx, p)
+	case "reconcile-activity":
+		p, err := open(ctx, "DATABASE_URL")
+		if err != nil {
+			return err
+		}
+		defer p.Close()
+		a, err := open(ctx, "ACTIVITY_DATABASE_URL")
+		if err != nil {
+			return err
+		}
+		defer a.Close()
+		r, err := eventaudit.Run(ctx, p, a, true)
+		if err != nil {
+			return err
+		}
+		if err = output(r); err != nil {
+			return err
+		}
+		if !r.OK {
+			return errors.New("event projection reconciliation failed")
+		}
+		return nil
 	case "migrate":
 		p, err := open(ctx, "MIGRATION_DATABASE_URL")
 		if err != nil {

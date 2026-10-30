@@ -19,8 +19,8 @@ func TestRetryAfter(t *testing.T) {
 			t.Fatal(got, row.want)
 		}
 	}
-	if ClientID("token") == "token" || len(ClientID("token")) != 64 || ClientID("token") != ClientID("token") {
-		t.Fatal("unstable client identity")
+	if ClientID("token") == "token" || len(ClientID("token")) != 64 || ClientID("token") == ClientID("different-token") {
+		t.Fatal("client identity exposes or aliases credentials")
 	}
 }
 func TestSharedRealRedisBudgetAndTTL(t *testing.T) {

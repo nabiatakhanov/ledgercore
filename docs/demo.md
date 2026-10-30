@@ -1,42 +1,94 @@
-# Reproducible demo
+# Events demonstration
 
-From a clean checkout with Docker Engine and Compose v2 running:
+From the repository root, with Docker Desktop/Engine and Compose v2 available:
 
 ```sh
-docker compose up --build -d
+make up
 make demo
 make reconcile
 ```
 
-`make up` is the equivalent startup target. First startup initializes separate bootstrap, schema-owner migrator, app and fixture roles, applies embedded migrations, then starts the API after the migration service succeeds. Compose provides localhost-only development credentials by default so the one-command quick start needs no file editing. `.env.example` lists overrides; use URL-safe credential characters in these connection URLs or percent-encode them. Changes to database bootstrap passwords affect a fresh volume only. No credentials are baked into the image.
+PowerShell equivalent (no Make installation required):
 
-The explicit administrative fixture command is:
-
-```sh
-docker compose --profile tools run --rm ledgerctl fixture --allow-test-funds
+```powershell
+docker compose up --build -d --wait --wait-timeout 180
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/demo-events.ps1
+docker compose --profile tools run --rm --no-deps ledgerctl reconcile-activity
 ```
 
-It creates two deterministic demo wallet UUIDs, then funds each with100000 kopecks from the protected system balancing account. The fixture role must be supplied separately; the API has no such credential. Stable funding keys include the fixture version and account. Repeating the command replays funding. Changing an amount under an existing key conflicts instead of adding new funds.
+`make demo` selects the PowerShell or Bash implementation for the host. It uses
+only the `ledgercore-events` Compose project. Public Gateway ports are18080 and18081.
+Default local credentials are in Compose and `.env.example`; use private overrides
+for anything beyond this local demonstration. Keep private service ports private.
 
-`make demo` performs that fixture, sends an HTTP2500-kopeck transfer and a full reversal using stable keys, sends16 concurrent HTTP requests with one key for a100-kopeck transfer, prints both balances and runs independent reconciliation. Expected final demo balances are99900 and100100 kopecks. Repeating the entire demo returns those same balances and replays the same three operations; initial funds do not double. The system account is-200000 kopecks. Public `POST /v1/accounts` always creates a separate zero-balance client.
+The script checks health with bounded waits and records each command's exit code,
+duration, stdout and stderr. A normal run takes several minutes, including actual
+Redis window expiry and broker recovery. The default quota is60 requests per
+first-request1-minute window. Set `RATE_LIMIT=60` and `RATE_WINDOW=1m` if your
+environment overrides them. No Redis keys, Kafka offsets or SQL rows are deleted.
 
-## Native execution
+The sequence is:
 
-Provision PostgreSQL17.9, a dedicated empty database and the roles in `scripts/bootstrap-db.sh`. On Unix, supply the bootstrap environment shown in that script to `sh scripts/bootstrap-db.sh`. Set these environment variables without writing secrets into source:
+1. Build/start the stack; observe any previous quota window expiring, and make a
+   one-request limiter probe.
+2. Reuse two deterministic wallets, fund each once with1,000,000 kopecks, transfer
+   2,500 kopecks and fully reverse it. Replay the transfer key and verify the same
+   operation ID. Wait for both inbox IDs, then read Activity through Gateway/gRPC
+   and run both financial and projection audits.
+3. Stop Kafka, accept20 new1-kopeck transfers, and assert at least20 unpublished
+   outbox events. Hold the outage for10 seconds by default. Stop publisher during
+   that outage and require clean bounded exit. Restart Kafka/publisher, wait for
+   complete projection, and audit again. The measured outage includes Docker stop
+   and broker readiness time as well as the explicit hold.
+4. Stop Activity, accept20 more transfers, assert at least20 unprojected events,
+   restart Activity, and measure catch-up. Financial writes remain available.
+5. Replay retained Kafka records with a new consumer-group ID into the existing
+   projection. Unique inbox, entry and summary counts must remain unchanged.
+6. After the existing quota window expires, concurrently send80 requests through
+   two Gateways with one client credential and one operation key. Require60
+   successful responses and20 HTTP429 responses, with valid Retry-After.
+7. Stop Redis. Require HTTP503 `rate_limiter_unavailable` and no saved SQL outcome
+   for that request key. Restart Redis.
+8. Send SIGTERM to Ledger, both Gateways, Activity and publisher; require exit0
+   within the bounded Docker stop. Restore the stack and run both audits again.
 
-- `MIGRATION_DATABASE_URL`: schema-owner login, command `go run ./cmd/ledgerctl migrate`.
-- `DATABASE_URL`: `ledger_app` login, command `go run ./cmd/api`.
-- `FIXTURE_DATABASE_URL`: `ledger_fixture` login for explicit fixture/demo/bench commands.
-- `API_TOKEN`: shared token of at least16 bytes; `API_URL` defaults to `http://127.0.0.1:8080`.
+The consumer deliberately stops after a persistent fetch/SQL/offset failure. The
+Kafka recovery step therefore explicitly starts Activity as well as publisher
+after broker readiness; it is an operator recovery action recorded in the report.
+Offsets are retained, and replay protects the SQL effects. There is no claim that
+an exited process restarts itself. Each CLI phase has a2-minute default deadline,
+adjustable with `--timeout` within1s..10m.
 
-Then use `go run ./cmd/ledgerctl demo` and `go run ./cmd/ledgerctl reconcile`. This native path was exercised in the implementation environment; exact findings are in `environment-notes.md` and `acceptance.md`. Windows GCC requires an ASCII temporary path for race builds on this machine; set task-local `GOTMPDIR`, `TEMP`, `TMP` and add the MSYS2 compiler to PATH.
+Stable fixture funding keys prevent repeated demonstrations from funding the same
+wallets again. Each full run uses a new run ID for the outage transfers and limiter
+operation, so balances and history intentionally accumulate those real operations.
+The stable normal transfer and reversal retain their IDs. Activity summaries count
+incoming/outgoing operations including reversal postings; they are not wallet balances.
 
-## Failure and concurrency experiments
+Reports are written to `.runtime/events-demo/<run-id>/report.json`, alongside raw
+step output and source provenance (HEAD, dirty status and a SHA256 content manifest).
+They are private runtime files and are ignored by Git. Failure logs are captured
+before restoration; the final report records whether services were restored. A
+failed run is not accepted as successful because cleanup succeeded.
 
-`make test-integration` provisions its own tmpfs PostgreSQL in the Compose test profile. Fault triggers, administrator projection corruption and a killed subprocess only run there. Native equivalent: point all three `LEDGER_TEST_DATABASE_URL`, `LEDGER_TEST_FIXTURE_URL`, `LEDGER_TEST_ADMIN_URL` at the same separate database whose name contains`test`, set `LEDGER_REQUIRE_INTEGRATION=1`, then run `make test-integration-local`. The harness verifies actual login roles and refuses to run destructive cases against a non-test database. There is no production fault-injection switch.
+For individual steps, run the CLI through the tools profile:
 
-The precommit-crash test installs a test-only trigger, holds an advisory-lock barrier on the source account, starts a subprocess executing the real writer, observes its wait in `pg_locks`, kills that process, unlocks and verifies unchanged balances/no journal/no idempotency outcome. It does not rely on an arbitrary sleep to decide when to kill. Another test injects SQLSTATE40001 exactly once and checks whole-transaction retry; a context deadline while a row is locked must return promptly and leave no partial state.
+```sh
+docker compose --profile tools run --rm --no-deps ledgerctl events-demo --phase normal
+docker compose --profile tools run --rm --no-deps ledgerctl events-demo --phase status
+docker compose --profile tools run --rm --no-deps ledgerctl events-demo --phase verify
+docker compose --profile tools run --rm --no-deps ledgerctl events-demo --phase replay
+```
 
-For lost HTTP responses after commit, repeat the exact normalized request with the original key. Do not invent a replacement key. A503 may mean timeout, contention or unknown commit outcome. Final insufficient-funds responses persist and do not become successes after later funding; a new intentional operation requires a new key.
+`--no-deps` is essential during an intentional outage so Compose does not restart
+the stopped dependency. The full script supplies both Gateway URLs and effective
+limiter settings. `enqueue` and limiter checks accept `--run-id` and `--count`;
+prefer the script for their coordinated assertions.
 
-Stop with `make down`; data remains in the named volume. `make destroy-data` explicitly deletes the volume and all development data. It is never part of normal startup or shutdown.
+Run the crash-window, rebalance, DLQ and temporary SQL-failure tests with
+`make test-integration`. These use separate test databases/topics and test-only
+subprocess barriers. See [failure scenarios](failure-scenarios.md),
+[runbook](runbook.md) and [acceptance](events/acceptance.md) for performed checks.
+
+`make down` preserves volumes. `make destroy-data` is a separate explicit destructive
+command and is unnecessary for repeatable demonstrations.
